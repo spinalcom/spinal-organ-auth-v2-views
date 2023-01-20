@@ -10,16 +10,17 @@
                 </v-card-title>
                 <v-data-table fixed-header style="background-color: #F7F7F7;" :footer-props="{
                     'items-per-page-options': [10, -1]
-                }" :items-per-page="30" height="70vh" :headers="headers" :items="logList" :search="search">
+                }" :items-per-page="30" height="70vh" :headers="headers" :items="this.logList" :search="search">
                 </v-data-table>
             </div>
         </v-card>
     </v-app>
 </template>
-  
+
 <script>
 import BackupInformation from "../Components/BackupInformation.vue"
 import FiltreBar from "../Components/FiltreBar.vue"
+import { mapActions, mapGetters } from "vuex";
 
 export default {
     name: "App",
@@ -35,201 +36,34 @@ export default {
         logsdate2: '',
         logsnom: '',
         logsclientid: '',
-        headers: [{ text: 'Nom', value: 'id' },
-        { text: 'Type Dévénement', value: 'parentsInfoname' },
+        headers: [{ text: 'ID', value: 'id' },
+        { text: 'Type Dévénement', value: 'parentsInfo.parent.name' },
         { text: 'Date', value: 'date' },
         { text: 'Acteur', value: 'actor.actorName' },
         { text: 'Id Acteur', value: 'actor.actorId' },
         { text: 'Resultat', value: 'message' }],
 
-        logList: [{
-            id: '25412',
-            parentsInfoname: 'le nomdu parent',
-            date: "18 nov 2020",
-            actor: {
-                actorName: 'acteur name',
-                actorId: '013654'
-            },
-            message: 'salut'
-        },
-        {
-            id: '8569',
-            parentsInfoname: 'le nomdu parent',
-            date: "18 nov 2020",
-            actor: {
-                actorName: 'acteur name',
-                actorId: '013654'
-            },
-            message: 'salut'
-        },
-        {
-            id: '99',
-            parentsInfoname: 'le nomdu parent',
-            date: "18 nov 2020",
-            actor: {
-                actorName: 'acteur name',
-                actorId: '013654'
-            },
-            message: 'salut'
-        },
-        {
-            id: '7869',
-            parentsInfoname: 'le nomdu parent',
-            date: "1 nov 2020",
-            actor: {
-                actorName: 'acteur name',
-                actorId: '013654'
-            },
-            message: 'salut'
-        },
-        {
-            id: '555',
-            parentsInfoname: 'le nomdu parent',
-            date: "15 nov 2020",
-            actor: {
-                actorName: 'acteur name',
-                actorId: '013654'
-            },
-            message: 'salut'
-        },
-        {
-            id: '555',
-            parentsInfoname: 'le nomdu parent',
-            date: "15 nov 2020",
-            actor: {
-                actorName: 'acteur name',
-                actorId: '013654'
-            },
-            message: 'salut'
-        },
-        {
-            id: '555',
-            parentsInfoname: 'le nomdu parent',
-            date: "15 nov 2020",
-            actor: {
-                actorName: 'acteur name',
-                actorId: '013654'
-            },
-            message: 'salut'
-        },
-        {
-            id: '555',
-            parentsInfoname: 'le nomdu parent',
-            date: "15 nov 2020",
-            actor: {
-                actorName: 'acteur name',
-                actorId: '013654'
-            },
-            message: 'salut'
-        },
-        {
-            id: '555',
-            parentsInfoname: 'le nomdu parent',
-            date: "15 nov 2020",
-            actor: {
-                actorName: 'acteur name',
-                actorId: '013654'
-            },
-            message: 'salut'
-        },
-        {
-            id: '555',
-            parentsInfoname: 'le nomdu parent',
-            date: "15 nov 2020",
-            actor: {
-                actorName: 'acteur name',
-                actorId: '013654'
-            },
-            message: 'salut'
-        },
-        {
-            id: '555',
-            parentsInfoname: 'le nomdu parent',
-            date: "15 nov 2020",
-            actor: {
-                actorName: 'acteur name',
-                actorId: '013654'
-            },
-            message: 'salut'
-        },
-        {
-            id: '555',
-            parentsInfoname: 'le nomdu parent',
-            date: "15 nov 2020",
-            actor: {
-                actorName: 'acteur name',
-                actorId: '013654'
-            },
-            message: 'salut'
-        },
-        {
-            id: '555',
-            parentsInfoname: 'le nomdu parent',
-            date: "15 nov 2020",
-            actor: {
-                actorName: 'acteur name',
-                actorId: '013654'
-            },
-            message: 'salut'
-        },
-        {
-            id: '555',
-            parentsInfoname: 'le nomdu parent',
-            date: "15 nov 2020",
-            actor: {
-                actorName: 'acteur name',
-                actorId: '013654'
-            },
-            message: 'salut'
-        },
-        {
-            id: '555',
-            parentsInfoname: 'le nomdu parent',
-            date: "15 nov 2020",
-            actor: {
-                actorName: 'acteur name',
-                actorId: '013654'
-            },
-            message: 'salut'
-        },
-        {
-            id: '1235',
-            parentsInfoname: 'le nomdu parent',
-            date: "14 nov 2020",
-            actor: {
-                actorName: 'acteur name',
-                actorId: '013654'
-            },
-            message: 'salut'
-        }],
         logPostion: {},
     }),
+
     methods: {
-        // filtre(dateparam) {
-        //     const date = new Date(dateparam);
-        //     const start = new Date(this.logsdate1);
-        //     const end = new Date(this.logsdate2);
-        //     if (this.logsdate1 != '' && this.logsdate2 != '') {
-        //         if (date > start && date < end) {
-        //             return true
-        //         } else {
-        //             return false
-        //         }
-        //     } else if (this.logsdate1 != '' && this.logsdate2 == '') {
-        //         if (date > start) {
-        //             return true
-        //         } else
-        //             return false
-        //     } else {
-        //         return true
-        //     }
-        // },
+        updatelogList() {
+            this.$store.dispatch('logs/getLogs')
+        },
         affichage() {
             var a = document.querySelector("#app > div.v-menu__content.theme--light.menuable__content__active");
-            a.style.position = "fixed";
+            if (a != null){
+                a.style.position = "fixed";
+            }
         }
     },
+    computed: {
+        ...mapGetters({ logList: 'logs/getlogList' }),
+    },
 
+    created() {
+        this.updatelogList();
+    }
 }
 
 

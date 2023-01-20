@@ -22,27 +22,32 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import axios from 'axios';
+
+const instanceAxios = require("../services/axiosConfig");
 export default {
-  namespaced: true,
-  state: {
-    data: []
-  },
-  getters: {
-    dataList: state => state.data
-  },
-  actions: {
-    async fetchData({ commit }) {
-      const response = await axios.get("http://localhost:9056/api/v1/context/list");
-      commit("setData", response.data);
-    }
-  },
-  mutations: {
-    setData: (state, data) => (
-      state.data = data
-    )
-  }
+    namespaced: true,
+    state: {
+        data: [],
+        loglist: [],
+    },
+    getters: {
+        getlogList: state => state.loglist,
+    },
+    actions: {
+        async getLogs({ commit }) {
+            
+            const rep = await instanceAxios.instanceAxios.get("/logs", {
+                headers: {
+                  "Content-Type": "application/json",
+                  "x-access-token": localStorage.getItem("token")
+                }
+              });
+            commit("setlogList", rep.data);
+        },
+    },
+    mutations: {
+        setlogList: (state, loglist) => (
+            state.loglist = loglist
+        ),
+    },
 }
-
-
-

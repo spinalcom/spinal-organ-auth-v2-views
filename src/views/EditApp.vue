@@ -3,7 +3,7 @@
         <v-main>
             <BachupInformation title="EDIT APP">
                 <form class="formulaire" novalidate @submit.prevent="validateApp">
-                    <InputUser title="NOM DE L'APPLICATION" id="telephone" v-model="formApp.name" />
+                    <InputUser title="NOM DE L'APPLICATION" id="telephone" v-model="formApp.appName" />
                     <span class="errors" :class="{ 'showspan': iserrors }" v-if="!$v.formApp.appName.minLength">Nom
                         invalide</span>
                     <span class="errors" :class="{ 'showspan': iserrors }" v-else-if="!$v.formApp.appName.required">Un
@@ -17,7 +17,7 @@
                     <InputUser title="TYPE D'APPLICATION" id="type" v-model="formApp.appType" />
                     <span class="errors" :class="{ 'showspan': iserrors }" v-if="!$v.formApp.appType.required">Le Type
                         d'appication est nécessaire</span>
-                    <AddPlatform ref="refplatform"/>
+                    <AddPlatform :types="'app'" ref="refplatform"/>
                     <span style="position: absolute;margin-top:-45px;" class="errors" :class="{ 'showspan': !error_platform }">
                         Les accès aux utilisateurs sont incorrects.
                     </span>
@@ -38,7 +38,7 @@ import InputPass from "../Components/InputPassword";
 import AddPlatform from "../Components/AddPlatform";
 import { validationMixin } from "vuelidate";
 import { required, email, minLength, numeric } from "vuelidate/lib/validators";
-
+import { mapActions, mapGetters } from "vuex";
 
 export default {
     name: "App",
@@ -51,7 +51,7 @@ export default {
     data() {
         return {
             formApp: {
-                name: null,
+                appName: null,
                 clientId: 'this.generateRegisterKey()',
                 clientSecret: 'this.generateRegisterKey()',
                 appType: null
@@ -83,27 +83,55 @@ export default {
             this.$router.push("/Users");
         },
 
-        validateApp() {
+        async updateAppForm() {
+           await this.$store.dispatch('applications/getApp', this.$route.query.id);
+            console.log(this.detailApp);
+            this.formApp.appName = this.detailApp.name;
+            this.formApp.clientId = this.detailApp.clientId;
+            this.formApp.clientSecret = this.detailApp.clientSecret;
+            this.formApp.appType = this.detailApp.appType;
+        },
 
+        ...mapActions({ updateApp: 'applications/updateApp' }),
+
+
+        async validateApp() {
+            await this.$refs.refplatform.maFonction();
             this.$v.$touch();
 
-            this.error_platform = false;
-            var tab_platform = this.$refs.refplatform.$data.formPlatformObject.plat;
-            for (let y = 0; y < tab_platform.length; y++) {
-                for (let z = y + 1; z < tab_platform.length; z++) {
-                    if (tab_platform[y] == tab_platform[z]) {
-                        this.error_platform = true;
-                    }
-                }
-            }
-
-            if (!this.$v.$invalid && this.error_platform == false) {
+            if (!this.$v.$invalid ) {
                 console.log('valid form');
+                var objectBody = {
+                    name: this.formApp.appName,
+                    clientId: this.formApp.clientId,
+                    clientSecret: this.formApp.clientSecret,
+                    appType: this.formApp.appType,
+                    platformList: this.platformObjectList.map(el => {
+                        return {
+                            platformId: el.platformId,
+                            appProfile: {
+                                name: el.appProfile.name,
+                                appProfileId: el.appProfile.appProfileId
+                            }
+                        };
+                    })
+                }
+                var profile = [objectBody,this.$route.query.id];
+                this.updateApp(profile);
             } else {
                 this.iserrors = false;
             }
         }
     },
+    computed: {
+        ...mapGetters({
+            detailApp: 'applications/detailApp',
+            platformObjectList: 'applications/selectedplatformObjectList',
+        }),
+    },
+    created() {
+        this.updateAppForm()
+    }
 }
 </script>
   

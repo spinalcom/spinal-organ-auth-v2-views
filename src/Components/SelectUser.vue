@@ -1,7 +1,7 @@
 <template>
     <div>
         <label class="title-input">{{ title }}</label>
-        <select :value="value" @change="$emit('input', $event.target.value)" class="input-user" type="text">
+        <select v-model="selectedValue" @change="selectItem()" class="input-user" type="text" :disabled="disabled">
             <option></option>
             <option v-for="item in tab" :key="item.tab">
                 {{ item.name }}
@@ -13,8 +13,20 @@
 <script>
 export default {
     name: "select-user",
-    props: ['tab', 'title', 'value'],
+    props: ['tab', 'title', 'value','disabled'],
+    data() {
+        return {
+            selectedValue: '',
+        }
+    },
+    methods: {
+        selectItem() {
+            let selectedItem = this.tab.find(item => item.name === this.selectedValue)
+            this.$emit("input", selectedItem)
+        }
+    }
 };
+
 </script>
   
 <style>
@@ -27,6 +39,7 @@ export default {
 }
 
 .title-input {
+    z-index: 9;
     position: relative;
     top: 9px;
     margin-left: 5px;

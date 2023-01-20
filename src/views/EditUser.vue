@@ -46,8 +46,9 @@
                     <span class="errors" :class="{ 'showspan': iserrors }" v-if="!$v.formUser.userType.required">
                         The user type is required
                     </span>
-                    <AddPlatform ref="refplatform"/>
-                    <span style="position: absolute;margin-top:-45px;" class="errors" :class="{ 'showspan': !error_platform }">
+                    <AddPlatform :types="'user'" ref="refplatform" />
+                    <span style="position: absolute;margin-top:-45px;" class="errors"
+                        :class="{ 'showspan': !error_platform }">
                         Les accès aux utilisateurs sont incorrects.
                     </span>
                     <div class="d-flex justify-end">
@@ -68,6 +69,7 @@ import SelectUser from "../Components/SelectUser.vue";
 import AddPlatform from "../Components/AddPlatform";
 import { validationMixin } from "vuelidate";
 import { required, email, minLength, numeric } from "vuelidate/lib/validators";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
     components: {
@@ -86,9 +88,15 @@ export default {
                 telephone: null,
                 email: null,
                 info: null,
-                userType: null
+                userType: null,
+                platformList: null,
             },
-            userType: [],
+            userType: [{
+                name: 'Simple User'
+            },
+            {
+                name: 'Super User'
+            }],
             iserrors: true,
             error_platform: false,
         };
@@ -129,26 +137,76 @@ export default {
             this.$router.push("/Users");
         },
 
-        validateUser() {
+        async updateUserform() {
+            await this.$store.dispatch('users/getUser', this.$route.query.id);
+            this.formUser.userName = this.detailUser.name;
+            this.formUser.telephone = this.detailUser.telephone;
+            this.formUser.email = this.detailUser.email;
+            this.formUser.info = this.detailUser.info;
+            this.formUser.userType = this.detailUser.userType;
+        },
+
+        ...mapActions({ updateUser: 'users/updateUser' }),
+
+        async validateUser() {
+            await this.$refs.refplatform.maFonction();
             this.$v.$touch();
 
-            this.error_platform = false;
-            var tab_platform = this.$refs.refplatform.$data.formPlatformObject.plat;
-            for (let y = 0; y < tab_platform.length; y++) {
-                for (let z = y + 1; z < tab_platform.length; z++) {
-                    if (tab_platform[y] == tab_platform[z]) {
-                        this.error_platform = true;
-                    }
-                }
-            }
-
-            if (!this.$v.$invalid && this.error_platform == false) {
+            if (!this.$v.$invalid) {
                 console.log('valid form');
+
+                var platformObjectLists = {
+                    platformId: "0123",
+                    platformName: "lenom",
+                    userProfile: {
+                        userProfileAdminId: "0123",
+                        userProfileBosConfigId: "012",
+                        userProfileName: 'name'
+                    }
+
+                }
+
+                var objectBody = {
+                    userName: this.formUser.userName,
+                    password: this.formUser.password,
+                    email: this.formUser.email,
+                    telephone: this.formUser.telephone,
+                    info: this.formUser.info,
+                    userType: this.formUser.userType.name,
+
+            
+                    platformList: this.platformObjectList.map(el => {
+                        return {
+                            platformId: el.platformId,
+                            platformName: el.platformName,
+                            userProfile: {
+                                userProfileAdminId: el.userProfile.userProfileAdminId,
+                                userProfileBosConfigId: el.userProfile.userProfileBosConfigId,
+                                userProfileName: el.userProfile.userProfileName
+                            }
+                        };
+                    })
+                };
+
+                var profile = [objectBody, this.$route.query.id];
+                this.updateUser(profile);
+
+                console.log("fin");
             } else {
                 this.iserrors = false;
             }
         }
     },
+    computed: {
+        ...mapGetters({
+            detailUser: 'users/detailUser',
+            platformObjectList: 'users/selectedplatformObjectList',
+        }),
+
+    },
+    created() {
+        this.updateUserform()
+    }
 
 }
 </script>

@@ -26,6 +26,7 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue';
 import App from './App';
+import store from './store'
 import router from './router';
 import vuetify from '@/plugins/vuetify'; // path to vuetify export
 import VueCompositionAPI from '@vue/composition-api';
@@ -39,6 +40,7 @@ Vue.config.productionTip = false;
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>',
   vuetify,

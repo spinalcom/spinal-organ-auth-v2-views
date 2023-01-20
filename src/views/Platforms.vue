@@ -3,8 +3,7 @@
         <div class="d-flex justify-end" style="width: 100%; min-width: 980px;">
             <InputPassword :readonly="true" id="password" v-model="this.registerKey.value" />
             <v-card class="d-flex flex-column ml-2 pl-1 pt-1 pb-1 pr-1 justify-center rounded-lg" elevation="2">
-                <BlueButton @click.native="generateRegisterKey()" :icon="'mdi-sync'" title="GÉNERER UNE CLÉ"
-                    :val="'blue'" />
+                <BlueButton @click.native="generateKey()" :icon="'mdi-sync'" title="GÉNERER UNE CLÉ" :val="'blue'" />
             </v-card>
         </div>
         <BachupInformation title="LISTE DES PLATEFORMES">
@@ -28,7 +27,8 @@
                     <span class="subtitle-backbar"></span>
                 </div>
             </div>
-            <div v-for="item in platformList" :key="item.id">
+
+            <div v-for="item in this.platformList" :key="item.id">
                 <div class="d-flex mb-2">
                     <div style="width:20% ; min-width: 230px;" class="d-flex flex-column">
                         <div class="btn-valider-user rounded-l-lg">
@@ -89,7 +89,7 @@ import InputUser from "../Components/InputUser.vue"
 import BachupInformation from "../Components/BackupInformation.vue"
 import StateButton from "../Components/StateButton.vue"
 import InputPassword from "../Components/InputPassword.vue"
-
+import { mapActions, mapGetters } from "vuex";
 
 export default {
     name: "App",
@@ -103,28 +103,38 @@ export default {
     },
     data: () => ({
         token: "",
-        platformList: [
-            {
-                id: 1234,
-                name: 'testeplatform',
-                organs: [],
-                userProfiles: [],
-                appProfiles: [],
-                statusPlatform: 'online'
-            }
-        ],
-        registerKey: { value: 'la clé enregistré' },
         show: false,
     }),
 
     methods: {
-        async generateRegisterKey() {
+        getDataFromStore() {
+            this.$store.dispatch('platforms/getPlatformlist');
+            this.$store.dispatch('platforms/getRegisterKey');
+            // this.$store.dispatch('platforms/getApplications');
+        },
+
+        async generateKey() {
             this.show = true;
+            this.generateRegisterKey();
         },
         displayDetail(item) {
-            this.$router.push("/DetailPlatform");
+            this.$router.push({ name: "DetailPlatform", query: { id: item.id } });
         },
+        ...mapActions({
+            generateRegisterKey: 'platforms/generateRegisterKey'
+        })
+
     },
+    computed: {
+        ...mapGetters({
+            platformList: 'platforms/platformList',
+            registerKey: 'platforms/registerKey'
+        }),
+        
+    },
+    created() {
+        this.getDataFromStore();
+    }
 }
 </script>
   

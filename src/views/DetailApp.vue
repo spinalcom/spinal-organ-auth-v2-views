@@ -1,7 +1,7 @@
 <template>
     <v-app>
         <v-main>
-            <InformationBar v-on:btn1="deleteApp()" v-on:btn2="displayEditApp()" v-on:btn3="deleteApp()"
+            <InformationBar v-on:btn1="deleteApp()" v-on:btn2="displayEditApp()" v-on:btn3="deletebtn()"
                 title="INFORMATION DE L’APPLICATION" :title2="app.name" :icon="require('../assets/image/APP_icon.svg')">
                 <div class="d-flex">
                     <div class="d-flex flex-column mr-16">
@@ -63,6 +63,7 @@ import BachupInformation from "../Components/BackupInformation.vue";
 import BlueButton from "../Components/BlueButton.vue";
 import Tabs from "../Components/Tabs.vue";
 import FiltreBar from "../Components/FiltreBar.vue";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
     name: "App",
@@ -81,60 +82,32 @@ export default {
             { text: 'Message', value: 'message' },
             { text: 'Acteur', value: 'actor.actorName' },
             { text: 'Id Acteur', value: 'actor.actorId' },
-        ],
-        headers2: [{ text: 'Nom de platforme ', value: '_platform.name' },
+            ],
+            headers2: [{ text: 'Nom de platforme ', value: '_platform.name' },
             { text: 'Statut', value: '_platform.statusPlatform' },
             { text: 'Nom Utilisateur', value: 'userProfile.name' },
             { text: 'Id Utilisateur', value: 'userProfile.userProfileId' },
             { text: 'Platforme', value: '_platform.name' },
-        ],
-            
-            app: {
-                id: 123456789,
-                clientId: 4566666666,
-                type: 'type de l application',
-                name: 'nom de l application'
+            ],
 
-            },
             items: [
                 'PLATFORMS', 'LOGS',
             ],
-            logList: [
-                {
-                    name: 'le nom',
-                    date: '02-02-2000',
-                    message: 'le message',
-                    actor: {
-                        actorId: '02325',
-                        actorName: ' le nom'
-                    }
-                },
-                {
-                    name: 'le nom',
-                    date: '02-02-2000',
-                    message: 'le message',
-                    actor: {
-                        actorId: '02325',
-                        actorName: ' le nom'
-                    }
-                }
-            ],
-            platformObjectList: [
-                {
-                    _platform: {
-                        name: 'salut',
-                        statusPlatform: 'aaa',
-
-                    },
-                    userProfile: {
-                        name: 'salut',
-                        userProfileId: 'le chocolat'
-                    }
-                }
-            ],
+           
         };
     },
     methods: {
+
+        ...mapActions({ deleteApp: 'applications/deleteApp' }),
+
+        deletebtn() {
+            this.deleteApp(this.$route.query.id);
+        },
+
+        updateApp() {
+            this.$store.dispatch('applications/getApp', this.$route.query.id);
+            this.$store.dispatch('applications/getApplicationLogs', this.$route.query.id);
+        },
         getDate(date) {
             var acDate = new Date(date);
             return acDate;
@@ -144,9 +117,30 @@ export default {
         },
         affichage() {
             var a = document.querySelector("#app > div.v-menu__content.theme--light.menuable__content__active");
-            a.style.position = "fixed";
+            if (a != null) {
+                a.style.position = "fixed";
+            }
+        },
+
+        formattedLogList() {
+            console.log("toto");
+            console.log(this.logList);
+            return this.logList.map(log => {
+                log.date = new Date(log.date).toLocaleString();
+                return log;
+            });
         },
     },
+    computed: {
+        ...mapGetters({
+            app: 'applications/detailApp',
+            logList:'applications/appLogList',
+            platformObjectList:'applications/platformObjectList',
+        }),
+    },
+    created() {
+        this.updateApp()
+    }
 }
 </script>
   
@@ -163,7 +157,7 @@ export default {
     font-size: 11px !important;
 }
 
-#content > div > main > div > div.d-flex.flex-column.rounded-lg.backup-bar.v-card.v-sheet.theme--light.elevation-2 > div.v-tabs.v-tabs--grow.theme--light > div.v-window.v-item-group.theme--light.v-tabs-items > div > div.v-window-item.v-window-item--active > div > div > div.v-card__title > div{
+#content>div>main>div>div.d-flex.flex-column.rounded-lg.backup-bar.v-card.v-sheet.theme--light.elevation-2>div.v-tabs.v-tabs--grow.theme--light>div.v-window.v-item-group.theme--light.v-tabs-items>div>div.v-window-item.v-window-item--active>div>div>div.v-card__title>div {
     margin-top: 0;
     padding-top: 0;
 }
@@ -171,12 +165,14 @@ export default {
 .v-data-table>>>th {
     background: #F7F7F7 !important;
 }
+
 #content>div>main>div>div.d-flex.flex-column.rounded-lg.backup-bar.v-card.v-sheet.theme--light.elevation-2>div.v-tabs.v-tabs--grow.theme--light>div.v-window.v-item-group.theme--light.v-tabs-items>div>div.v-window-item.v-window-item--active>div>div>div.v-card__title {
     padding: 10px;
     background-color: white;
     border: 1px solid #E3E7E8;
     border-radius: 6px;
 }
+
 /* .titlelog {
     padding-top: 10px;
     padding-left: 10px;

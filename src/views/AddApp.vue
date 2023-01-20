@@ -19,8 +19,9 @@
                     <span class="errors" :class="{ 'showspan': iserrors }" v-if="!$v.formApp.appType.required">Le type
                         d'application est nécessaire</span>
                     <p class="mt-6">Sélectionnez les accès de plateformes.</p>
-                    <AddPlatform ref="refplatform" />
-                    <span style="position: absolute;margin-top:-45px;" class="errors" :class="{ 'showspan': !error_platform }">
+                    <AddPlatform :types="'app'" ref="refplatform" />
+                    <span style="position: absolute;margin-top:-45px;" class="errors"
+                        :class="{ 'showspan': !error_platform }">
                         Les accès aux utilisateurs sont incorrects.
                     </span>
                     <div class="d-flex justify-end">
@@ -40,6 +41,7 @@ import AddPlatform from "../Components/AddPlatform.vue";
 import BackupInformation from "../Components/BackupInformation.vue";
 import { validationMixin } from "vuelidate";
 import { required, email, minLength, numeric } from "vuelidate/lib/validators";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
     mixins: [validationMixin],
@@ -53,8 +55,8 @@ export default {
         return {
             formApp: {
                 appName: null,
-                clientId: 'this.generateRegisterKey()',
-                clientSecret: 'this.generateRegisterKey()',
+                clientId: this.generateRegisterKey(),
+                clientSecret: this.generateRegisterKey(),
                 appType: null,
             },
             iserrors: true,
@@ -84,25 +86,45 @@ export default {
         cancelAdd() {
             this.$router.push("/Users");
         },
+        generateRegisterKey() {
+            const generator = require("generate-password");
+            var registerKey = generator.generate({
+                length: 30,
+                numbers: true
+            });
+            return registerKey;
+        },
+        ...mapActions({ saveApp: 'applications/saveApp' }),
 
-        validateApp() {
+        async validateApp() {
+            await this.$refs.refplatform.maFonction();
             this.$v.$touch();
-            this.error_platform = false;
-            var tab_platform = this.$refs.refplatform.$data.formPlatformObject.plat;
-            for (let y = 0; y < tab_platform.length; y++) {
-                for (let z = y + 1; z < tab_platform.length; z++) {
-                    if (tab_platform[y] == tab_platform[z]) {
-                        this.error_platform = true;
-                    }
+            if (!this.$v.$invalid) {
+                var objectBody = {
+                    name: this.formApp.appName,
+                    clientId: this.formApp.clientId,
+                    clientSecret: this.formApp.clientSecret,
+                    appType: this.formApp.appType,
+                    platformList: this.platformObjectList.map(el => {
+                        return {
+                            platformId: el.platformId,
+                            appProfile: {
+                                name: el.appProfile.name,
+                                appProfileId: el.appProfile.appProfileId
+                            }
+                        };
+                    })
                 }
-            }
-
-            if (!this.$v.$invalid && this.error_platform == false) {
-                console.log('valid form');
+                this.saveApp(objectBody);
             } else {
                 this.iserrors = false;
             }
         }
+    },
+    computed: {
+        ...mapGetters({
+            platformObjectList: 'applications/selectedplatformObjectList',
+        }),
     },
 }
 </script>

@@ -26,59 +26,45 @@
 
             <BackupInformation style="max-height: 70%; min-height: 70%;" title="INFORMATION DE LA PLATFORME">
                 <Tabs :items="items">
-                    <v-tab-item v-if="platformList[0]">
+                    <v-tab-item v-if="this.platform">
                         <v-card style="background-color: #F7F7F7;">
-                            <div @click="affichage()"> 
+                            <div @click="affichage()">
                                 <v-data-table fixed-header style="background-color: #F7F7F7;" :footer-props="{
                                     'items-per-page-options': [10, -1]
-                                }" :items-per-page="30" height="45vh" :headers="headers" :items="organlist"
+                                }" :items-per-page="30" height="45vh" :headers="headers" :items="this.platform.organs"
                                     :search="search">
                                 </v-data-table>
                             </div>
                         </v-card>
                     </v-tab-item>
                     <!-- *****************************USER PROFILES******************************************** -->
-                    <v-tab-item v-if="platformList[0]">
-                        <div class="d-flex mt-2 mb-2">
-                            <div class="sub-division">
-                                <span class="subtitle-backbar">Nom</span>
+                    <v-tab-item v-if="this.platform">
+                        <v-card style="background-color: #F7F7F7;">
+                            <div @click="affichage()">
+                                <v-data-table fixed-header style="background-color: #F7F7F7;" :footer-props="{
+                                    'items-per-page-options': [10, -1]
+                                }" :items-per-page="30" height="45vh" :headers="headers2" :items="this.platform.userProfiles"
+                                    :search="search">
+                                </v-data-table>
                             </div>
-                            <div class="sub-division">
-                                <span class="subtitle-backbar">Id Profil Utilisateur</span>
-                            </div>
-                        </div>
-                        <div v-for="item, index in platformList[0].userProfiles" :key="index" class="d-flex mt-2 mb-2">
-                            <div class="sub-division">
-                                <div class="information-backup-bar2">{{ item.name }}</div>
-                            </div>
-                            <div class="sub-division">
-                                <div class="information-backup-bar2">{{ item.userProfileId }}</div>
-                            </div>
-                        </div>
+                        </v-card>
                     </v-tab-item>
                     <!-- *****************************APP PROFILES******************************************** -->
-                    <v-tab-item v-if="platformList[0]">
-                        <div class="d-flex mt-2 mb-2">
-                            <div class="sub-division">
-                                <span class="subtitle-backbar">Nom</span>
+                    <v-tab-item v-if="this.platform">
+                        <v-card style="background-color: #F7F7F7;">
+                            <div @click="affichage()">
+                                <v-data-table fixed-header style="background-color: #F7F7F7;" :footer-props="{
+                                    'items-per-page-options': [10, -1]
+                                }" :items-per-page="30" height="45vh" :headers="headers2" :items="this.platform.appProfiles"
+                                    :search="search">
+                                </v-data-table>
                             </div>
-                            <div class="sub-division">
-                                <span class="subtitle-backbar">Id Profil D'application</span>
-                            </div>
-                        </div>
-                        <div v-for="item, index in platformList[0].appProfiles" :key="index" class="d-flex mt-2 mb-2">
-                            <div class="sub-division">
-                                <div class="information-backup-bar2">{{ item.name }}</div>
-                            </div>
-                            <div class="sub-division">
-                                <div class="information-backup-bar2">{{ item.appProfileId }}</div>
-                            </div>
-                        </div>
+                        </v-card>
                     </v-tab-item>
                     <!-- *****************************USERS******************************************** -->
-                    <v-tab-item v-if="platformList[0]">
+                    <v-tab-item v-if="userListLinkPlatform">
                         <v-card style="background-color: #F7F7F7;">
-                            <div @click="affichage()"> 
+                            <div @click="affichage()">
                                 <v-data-table fixed-header style="background-color: #F7F7F7;" :footer-props="{
                                     'items-per-page-options': [10, -1]
                                 }" :items-per-page="30" height="45vh" :headers="headers" :items="userListLinkPlatform"
@@ -88,9 +74,9 @@
                         </v-card>
                     </v-tab-item>
                     <!-- *****************************APPS******************************************** -->
-                    <v-tab-item v-if="platformList[0]">
+                    <v-tab-item v-if="appListLinkPlatform">
                         <v-card style="background-color: #F7F7F7;">
-                            <div @click="affichage()"> 
+                            <div @click="affichage()">
                                 <v-data-table fixed-header style="background-color: #F7F7F7;" :footer-props="{
                                     'items-per-page-options': [10, -1]
                                 }" :items-per-page="30" height="45vh" :headers="headers" :items="appListLinkPlatform"
@@ -100,7 +86,7 @@
                         </v-card>
                     </v-tab-item>
                     <!-- *****************************LOGS******************************************** -->
-                    <v-tab-item v-if="platformList[0]">
+                    <v-tab-item v-if="logList">
                         <v-card style="background-color: #F7F7F7;">
                             <div @click="affichage()">
                                 <v-card-title>
@@ -129,6 +115,7 @@ import Tabs from "../Components/Tabs.vue";
 import BackupInformation from "../Components/BackupInformation.vue";
 import FiltreBar from "../Components/FiltreBar.vue";
 import { onMounted } from "vue";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
     name: "App",
@@ -147,132 +134,14 @@ export default {
             { text: 'Message', value: 'message' },
             { text: 'Acteur', value: 'actor.actorName' },
             { text: 'Id Acteur', value: 'actor.actorId' },],
+            headers2: [{ text: 'Nom', value: 'name' },
+            { text: 'Id profil', value: 'date' }],
             mounted: false,
             platformId: null,
-            platform: {
-                name: 'nom du BOS',
-                url: 'url test',
-                address: 'adress test',
-                statusPlatform: 'online',
-                TokenBosAdmin: '00000'
-            },
-            platformList: [
-                {
-                    appProfiles: {
-                        appProfiles: {
-                            name: "le nom de l'app profile",
-                            appProfileId: ' id profil app'
-                        },
-                    },
-                    userProfiles: {
-                        userProfiles: {
-                            name: 'test nm',
-                            userProfileId: 'profil id'
-                        }
-                    }
-                }
-            ],
+            
             userList: [],
-            userListLinkPlatform: [
-                {
-                    name: "salut",
-                    date: "18 nov 2022",
-                    message: "le message important",
-                    actor: {
-                        actorId: "222",
-                        actorName: "je suis la",
-                    }
-                },
-            ],
-            organlist: [
-                {
-                    name: "salut",
-                    date: "18 nov 2022",
-                    message: "le message important",
-                    actor: {
-                        actorId: "222",
-                        actorName: "je suis la",
-                    }
-                },
-            ],
             itemSelected: null,
             appList: [],
-            appListLinkPlatform: [
-                {
-                    name: "la partie1",
-                    date: "18 nov 2022",
-                    message: "le message important",
-                    actor: {
-                        actorId: "22",
-                        actorName: "je suis la",
-                    }
-                },
-                {
-                    name: "salut",
-                    date: "18 nov 2022",
-                    message: "le message important",
-                    actor: {
-                        actorId: "25482",
-                        actorName: "je suis la",
-                    }
-                }
-            ],
-            logList: [
-                {
-                    name: "le test 01",
-                    date: "18 nov 2022",
-                    message: "le message important",
-                    actor: {
-                        actorId: "22",
-                        actorName: "je suis la",
-                    }
-                },
-                {
-                    name: "le nom",
-                    date: "14 nov 2022",
-                    message: "le message important",
-                    actor: {
-                        actorId: "21842",
-                        actorName: "je suis la",
-                    }
-                },
-                {
-                    name: "le nom",
-                    date: "13 nov 2022",
-                    message: "le message important",
-                    actor: {
-                        actorId: "218422",
-                        actorName: "je suis la",
-                    }
-                },
-                {
-                    name: "ledeux",
-                    date: "11 nov 2022",
-                    message: "le message important",
-                    actor: {
-                        actorId: "218422",
-                        actorName: "je suis la",
-                    }
-                },
-                {
-                    name: "ledeux",
-                    date: "11 nov 2022",
-                    message: "le message important",
-                    actor: {
-                        actorId: "218422",
-                        actorName: "je suis la",
-                    }
-                },
-                {
-                    name: "ledeux",
-                    date: "11 nov 2022",
-                    message: "le message important",
-                    actor: {
-                        actorId: "218422",
-                        actorName: "je suis la",
-                    }
-                },
-            ],
             tab: null,
             items: [
                 'ORGANES', "PROFILS D'UTILISATEURS", "PROFILS D'APPLICATIONS", 'UTILISATEURS', 'APPLICATIONS', 'LOGS',
@@ -280,12 +149,29 @@ export default {
         };
     },
     methods: {
+        updatePlatform() {
+            this.$store.dispatch('platforms/getPlatform', this.$route.query.id);
+            this.$store.dispatch('platforms/getPlatformLogs', this.$route.query.id);
+            this.$store.dispatch('platforms/getApplications');
+            this.$store.dispatch('platforms/getUsers');
+
+        },
         affichage() {
             var a = document.querySelector("#app > div.v-menu__content.theme--light.menuable__content__active");
             a.style.position = "fixed";
         },
     },
-    mounted() {
+
+    computed: {
+        ...mapGetters({
+            platform: 'platforms/platform',
+            logList:'platforms/platformlog',
+            appListLinkPlatform:'platforms/appListLinkPlatform',
+            userListLinkPlatform:'platforms/userListLinkPlatform',
+        }),
+    },
+    created() {
+        this.updatePlatform()
     }
 }
 </script>
@@ -294,6 +180,7 @@ export default {
 .v-application {
     background: #eeeeee00;
 }
+
 .v-data-table>>>td {
     background-color: white;
     border-top: 10px solid #F7F7F7;
@@ -302,15 +189,17 @@ export default {
     font-size: 11px !important;
 }
 
-#content > div > main > div > div.d-flex.flex-column.rounded-lg.backup-bar.v-card.v-sheet.theme--light.elevation-2 > div.v-tabs.v-tabs--grow.theme--light > div.v-window.v-item-group.theme--light.v-tabs-items > div > div.v-window-item.v-window-item--active > div > div > div.v-card__title > div{
+#content>div>main>div>div.d-flex.flex-column.rounded-lg.backup-bar.v-card.v-sheet.theme--light.elevation-2>div.v-tabs.v-tabs--grow.theme--light>div.v-window.v-item-group.theme--light.v-tabs-items>div>div.v-window-item.v-window-item--active>div>div>div.v-card__title>div {
     margin-top: 0;
     padding-top: 0;
-    
+
 }
+
 .v-data-table>>>th {
     background: #F7F7F7 !important;
-    
+
 }
+
 #content>div>main>div>div.d-flex.flex-column.rounded-lg.backup-bar.v-card.v-sheet.theme--light.elevation-2>div.v-tabs.v-tabs--grow.theme--light>div.v-window.v-item-group.theme--light.v-tabs-items>div>div.v-window-item.v-window-item--active>div>div>div.v-card__title {
     padding: 10px;
     background-color: white;

@@ -1,29 +1,30 @@
 <template>
     <v-app>
         <v-main>
-            <InformationBar v-on:btn2="displayEditUser()" v-on:btn3="deleteUser()" title="INFORMATION DE L'UTILISATEUR"
-                :title2="this.user.userName" :icon="require('../assets/image/USE_icon.svg')">
+            <InformationBar @click.native="toto()" v-on:btn2="displayEditUser()" v-on:btn3="deletebtn()"
+                title="INFORMATION DE L'UTILISATEUR" :title2="this.detailUser.userName"
+                :icon="require('../assets/image/USE_icon.svg')">
                 <div class="d-flex">
                     <div class="d-flex flex-column mr-16">
                         <span class="bar-sub-title">USER ID</span>
-                        <span class=" bar-information">{{ this.user.id }}</span>
+                        <span class=" bar-information">{{ this.detailUser.id }}</span>
                     </div>
                     <div class="d-flex flex-column mr-16">
                         <span class="bar-sub-title">EMAIL</span>
-                        <span class="bar-information">{{ this.user.email }}</span>
+                        <span class="bar-information">{{ this.detailUser.email }}</span>
                     </div>
                     <div class="d-flex flex-column mr-16">
                         <span class="bar-sub-title">TYPE</span>
-                        <span class="bar-information">{{ this.user.type }}</span>
+                        <span class="bar-information">{{ this.detailUser.type }}</span>
                     </div>
                     <div class="d-flex flex-column mr-16">
                         <span class="bar-sub-title">TELEPHONE</span>
-                        <span class="bar-information">{{ this.user.telephone }}</span>
+                        <span class="bar-information">{{ this.detailUser.telephone }}</span>
                     </div>
                 </div>
                 <div class="d-flex flex-column mr-16">
                     <span class="bar-sub-title">INFO</span>
-                    <span class="bar-information">{{ this.user.info }}</span>
+                    <span class="bar-information">{{ this.detailUser.info }}</span>
                 </div>
             </InformationBar>
 
@@ -34,8 +35,8 @@
                             <div @click="affichage()">
                                 <v-data-table fixed-header style="background-color: #F7F7F7;" :footer-props="{
                                     'items-per-page-options': [10, -1]
-                                }" :items-per-page="30" height="45vh" :headers="headers1" :items="platformObjectList"
-                                    :search="search">
+                                }" :items-per-page="30" height="45vh" :headers="headers1"
+                                    :items="this.platformObjectList" :search="search">
                                 </v-data-table>
                             </div>
                         </v-card>
@@ -67,6 +68,7 @@ import InformationBar from "../Components/InformationBar.vue";
 import BackupInformation from "../Components/BackupInformation.vue";
 import Tabs from "../Components/Tabs.vue";
 import FiltreBar from "../Components/FiltreBar.vue";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
     name: "App",
@@ -79,182 +81,73 @@ export default {
     data() {
         return {
             search: '',
-            headers1 : [
-            { text: 'Nom', value: '_platform.name' },
-            { text: 'Statut', value: '_platform.statusPlatform' },
-            { text: 'Message', value: 'userProfile.name' },
-            { text: 'Id Acteur', value: 'userProfile.userProfileId' },
-            { text: 'Nom Acteur', value: '_platform.name' },
+            headers1: [
+                { text: 'Nom', value: '_platform.name' },
+                { text: 'Statut', value: '_platform.statusPlatform' },
+                { text: 'Message', value: 'userProfile.name' },
+                { text: 'Id Acteur', value: 'userProfile.userProfileId' },
+                { text: 'Nom Acteur', value: '_platform.name' },
             ],
-            headers: [{ text: 'Nom', value: 'name' },
-            { text: 'Date', value: 'date' },
-            { text: 'Message', value: 'message' },
-            { text: 'Acteur', value: 'actor.actorName' },
-            { text: 'Id Acteur', value: 'actor.actorId' },],
-            user: {
-                id: 1233456,
-                userName: 'nom de la personne',
-                email: 'gabriel@a.com',
-                type: 'super User',
-                telephone: '0123456789',
-                info: 'information stoqué en dure , information user stoqué dans un tableau information '
-            },
-            logList: [{
-                name: 'le nom',
-                date: '02-02-2000',
-                message: 'le message',
-                actor: {
-                    actorId: '02325',
-                    actorName: ' le nom'
-                }
-            },
-            {
-                name: 'le nom',
-                date: '02-02-2000',
-                message: 'le message',
-                actor: {
-                    actorId: '02325',
-                    actorName: ' le nom'
-                }
-            },
-            {
-                name: 'le nom',
-                date: '02-02-2000',
-                message: 'le message',
-                actor: {
-                    actorId: '02325',
-                    actorName: ' le nom'
-                }
-            },
-            {
-                name: 'le nom',
-                date: '02-02-2000',
-                message: 'le message',
-                actor: {
-                    actorId: '02325',
-                    actorName: ' le nom'
-                }
-            },
-            {
-                name: 'le nom',
-                date: '02-02-2000',
-                message: 'le message',
-                actor: {
-                    actorId: '02325',
-                    actorName: ' le nom'
-                }
-            },
-            {
-                name: 'le nom',
-                date: '02-02-2000',
-                message: 'le message',
-                actor: {
-                    actorId: '02325',
-                    actorName: ' le nom'
-                }
-            },
-            {
-                name: 'le nom',
-                date: '02-02-2000',
-                message: 'le message',
-                actor: {
-                    actorId: '02325',
-                    actorName: ' le nom'
-                }
-            },
-            {
-                name: 'le nom',
-                date: '02-02-2000',
-                message: 'le message',
-                actor: {
-                    actorId: '02325',
-                    actorName: ' le nom'
-                }
-            },
-            {
-                name: 'le nom',
-                date: '02-02-2000',
-                message: 'le message',
-                actor: {
-                    actorId: '02325',
-                    actorName: ' le nom'
-                }
-            },
-            {
-                name: 'le nom',
-                date: '02-02-2000',
-                message: 'le message',
-                actor: {
-                    actorId: '02325',
-                    actorName: ' le nom'
-                }
-            },
-            {
-                name: 'le nom',
-                date: '02-02-2000',
-                message: 'le message',
-                actor: {
-                    actorId: '02325',
-                    actorName: ' le nom'
-                }
-            },
-            {
-                name: 'le nom',
-                date: '02-02-2000',
-                message: 'le message',
-                actor: {
-                    actorId: '02325',
-                    actorName: ' le nom'
-                }
-            },
-            {
-                name: 'le nom',
-                date: '02-02-2000',
-                message: 'le message',
-                actor: {
-                    actorId: '02325',
-                    actorName: ' le nom'
-                }
-            },
-
-            {
-                name: 'le nom',
-                date: '02-02-2000',
-                message: 'le message',
-                actor: {
-                    actorId: '02325',
-                    actorName: ' le nom'
-                }
-            }],
+            headers: [
+                { text: 'Nom', value: 'name' },
+                { text: 'Date', value: 'date' },
+                { text: 'Message', value: 'message' },
+                { text: 'Acteur', value: 'actor.actorName' },
+                { text: 'Id Acteur', value: 'actor.actorId' },],
             items: [
                 'PLATFORME', 'LOGS',
             ],
-            platformObjectList: [{
-                _platform: {
-                    name: 'salut',
-                    statusPlatform: 'aaa',
-                },
-                userProfile: {
-                    name: 'salut',
-                    userProfileId: 'le chocolat'
-                }
-            }]
         };
+
     },
     methods: {
-        getDate(date) {
-            var acDate = new Date(date);
-            return acDate;
+
+        // toto(){
+        //     console.log(this.platformObjectList);
+        // },
+        ...mapActions({ deleteUser: 'users/deleteUser' }),
+
+        deletebtn() {
+            var user = {
+                id: this.$route.query.id,
+                name: this.detailUser.userName
+            }
+            this.deleteUser(user);
         },
+
+        updateUser() {
+            this.$store.dispatch('users/getUser', this.$route.query.id);
+            this.$store.dispatch('users/getUserLogs', this.$route.query.id);
+        },
+
         displayEditUser() {
-            this.$router.push('EditUser');
+            this.$router.push({ name: 'EditUser', query: { id: this.$route.query.id } });
         },
         affichage() {
             var a = document.querySelector("#app > div.v-menu__content.theme--light.menuable__content__active");
-            a.style.position = "fixed";
+            if (a != null) {
+                a.style.position = "fixed";
+            }
         },
+        formattedLogList() {
+            return this.logList.map(log => {
+                log.date = new Date(log.date).toLocaleString();
+                return log;
+            });
+        },
+
+    },
+    computed: {
+        ...mapGetters({
+            detailUser: 'users/detailUser',
+            platformObjectList: 'users/platformObjectList',
+            logList: 'users/logList'
+        }),
     },
 
+    created() {
+        this.updateUser()
+    }
 }
 </script>
   
@@ -271,7 +164,7 @@ export default {
     font-size: 11px !important;
 }
 
-#content > div > main > div > div.d-flex.flex-column.rounded-lg.backup-bar.v-card.v-sheet.theme--light.elevation-2 > div.v-tabs.v-tabs--grow.theme--light > div.v-window.v-item-group.theme--light.v-tabs-items > div > div.v-window-item.v-window-item--active > div > div > div.v-card__title > div{
+#content>div>main>div>div.d-flex.flex-column.rounded-lg.backup-bar.v-card.v-sheet.theme--light.elevation-2>div.v-tabs.v-tabs--grow.theme--light>div.v-window.v-item-group.theme--light.v-tabs-items>div>div.v-window-item.v-window-item--active>div>div>div.v-card__title>div {
     margin-top: 0;
     padding-top: 0;
 }
@@ -279,6 +172,7 @@ export default {
 .v-data-table>>>th {
     background: #F7F7F7 !important;
 }
+
 #content>div>main>div>div.d-flex.flex-column.rounded-lg.backup-bar.v-card.v-sheet.theme--light.elevation-2>div.v-tabs.v-tabs--grow.theme--light>div.v-window.v-item-group.theme--light.v-tabs-items>div>div.v-window-item.v-window-item--active>div>div>div.v-card__title {
     padding: 10px;
     background-color: white;

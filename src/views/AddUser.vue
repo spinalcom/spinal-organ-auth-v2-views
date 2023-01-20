@@ -40,7 +40,7 @@
           <div class="mt-6">
             <span> Sélectionner les accès de l'utilisateur</span>
           </div>
-          <AddPlatform ref="refplatform" />
+          <AddPlatform :types="'user'" ref="refplatform" @maFonction="validateUser" />
           <span style="position: absolute;margin-top:-45px;" class="errors" :class="{ 'showspan': !error_platform }">
             Les accès aux utilisateurs sont incorrects.
           </span>
@@ -63,6 +63,7 @@ import InputPass from "../Components/InputPassword";
 import AddPlatform from "../Components/AddPlatform";
 import { validationMixin } from "vuelidate";
 import { required, email, minLength, numeric } from "vuelidate/lib/validators";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   mixins: [validationMixin],
@@ -89,7 +90,10 @@ export default {
       error_platform: false,
       iserrors: true,
       userType: [{
-        name: 'salut'
+        name: 'Simple User'
+      },
+      {
+        name: 'Super User'
       }],
     };
   },
@@ -131,27 +135,46 @@ export default {
       this.$router.push("/Users");
     },
 
-    validateUser() {
+    ...mapActions({ saveUser: 'users/saveUser' }),
+
+    async validateUser() {
+      await this.$refs.refplatform.maFonction();
+
+
       this.$v.$touch();
-      this.error_platform = false;
-      var tab_platform = this.$refs.refplatform.$data.formPlatformObject.plat;
-      for (let y = 0; y < tab_platform.length; y++) {
-        for (let z = y + 1; z < tab_platform.length; z++) {
-          if (tab_platform[y] == tab_platform[z]) {
-            this.error_platform = true;
-          }
-        }
-      }
-      if (!this.$v.$invalid && this.error_platform == false) {
+
+
+      if (!this.$v.$invalid) {
         console.log('valid form');
+        var objectBody = {
+          userName: this.formUser.userName,
+          password: this.formUser.password,
+          email: this.formUser.email,
+          telephone: this.formUser.telephone,
+          info: this.formUser.info,
+          userType: this.formUser.userType.name,
+          platformList: this.platformObjectList.map(el => {
+            return {
+              platformId: el.platformId,
+              userProfile: {
+                name: el.userProfile.name,
+                userProfileId: el.userProfile.userProfileId
+              }
+            };
+          })
+        };
+        this.saveUser(objectBody);
+
+
       } else {
         this.iserrors = false;
       }
     },
-    ttoto() {
-
-      console.log(this.error_platform);
-    }
+  },
+  computed: {
+    ...mapGetters({
+      platformObjectList: 'users/selectedplatformObjectList',
+    }),
   },
 }
 </script>

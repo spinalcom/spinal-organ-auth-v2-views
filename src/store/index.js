@@ -25,11 +25,19 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import module from '../modules/module'
+import login from '../modules/Login'
+import users from '../modules/users'
+import applications from '../modules/applications'
+import platforms from '../modules/platforms'
+import logs from '../modules/logs'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  state: {},
+  state: {
+    count : 2
+  },
   mutations: {},
-  actions: {},
-  modules: { module },
+  actions: {
+  },
+  modules: { module,login,users,applications,platforms,logs},
 })

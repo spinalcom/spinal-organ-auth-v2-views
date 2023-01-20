@@ -53,7 +53,6 @@ export default {
       this.selectionMenu = page;
     }
   }
-
 }
 </script>
 

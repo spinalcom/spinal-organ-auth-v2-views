@@ -24,7 +24,7 @@
 
 import Vue from 'vue';
 import Router from 'vue-router';
-import HelloWorld from '@/views/Dashboard';
+import Dashboard from '@/views/Dashboard';
 import Users from '@/views/Users';
 import DetailUser from '@/views/DetailUser';
 import Platforms from '@/views/Platforms';
@@ -36,6 +36,8 @@ import AddUser from '@/views/AddUser';
 import EditApp from '@/views/EditApp';
 import EditUser from '@/views/EditUser';
 import Logs from '@/views/Logs';
+import Login from '@/views/Login';
+import EditPlatform from '@/views/EditPlatform'
 
 Vue.use(Router);
 
@@ -43,8 +45,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'HelloWorld',
-      component: HelloWorld
+      name: 'Dashboard',
+      component: Dashboard
     },
     {
       path: '/Users',
@@ -96,9 +98,20 @@ export default new Router({
       component: EditUser
     },
     {
+      path: '/EditPlatform',
+      name: 'EditPlatform',
+      component: EditPlatform
+    },
+    {
       path: '/Logs',
       name: 'Logs',
       component: Logs
     },
+    {
+      path: '/Login',
+      name: 'Login',
+      component: Login
+    },
+    
   ]
 });

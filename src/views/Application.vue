@@ -18,10 +18,10 @@
               <StateButton :obj="'bos'" :content1="'BOS 1'" :content2="'ÉTAGE 24'" :icon="'mdi-chip'" />
               <StateButton :obj="'app'" :content1="'APPLICATION'" :content2="'PROFIL 10'" :icon="'mdi-apps'" />
             </div>
-            <div class="d-flex" style="width: 100%">
+            <!-- <div class="d-flex" style="width: 100%">
               <StateButton :obj="'bos'" :content1="'BOS 1'" :content2="'ÉTAGE 24'" :icon="'mdi-chip'" />
               <StateButton :obj="'app'" :content1="'APPLICATION'" :content2="'PROFIL 10'" :icon="'mdi-apps'" />
-            </div>
+            </div> -->
           </div>
           <div class="content-list rounded-r-lg">
             <button class="pr-3" style="height: 100%;" @click="displayDetail(item)">
@@ -38,6 +38,7 @@
 import BlueButton from "../Components/BlueButton.vue"
 import BachupInformation from "../Components/BackupInformation.vue"
 import StateButton from "../Components/StateButton.vue"
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   name: "App",
@@ -48,19 +49,31 @@ export default {
   },
   data: () => ({
     token: "",
-    appList: [{
-      name: 'nom de l app',
-    }],
+    // appList: [{
+    //   name: 'nom de l app',
+    // }],
   }),
 
   methods: {
+    updateAppList() {
+      this.$store.dispatch('applications/getApplist')
+    },
+
     displayDetail(item) {
-      this.$router.push("/DetailApp");
+      // this.$router.push("/DetailApp");
+      this.$router.push({ name: "DetailApp", query: { id: item.id } });
     },
     displayAdd() {
       this.$router.push("/AddApp");
+      
     },
   },
+  computed: {
+    ...mapGetters({ appList: 'applications/appList' }),
+  },
+  created() {
+    this.updateAppList()
+  }
 }
 
 </script>

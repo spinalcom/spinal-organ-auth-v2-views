@@ -22,7 +22,7 @@ export default {
     padding: 10px;
     min-width: 980px;
     /* max-height: 800px; */
-    max-height: 85vh;
+    max-height: 80vh;
     overflow-y: auto;
     
 }

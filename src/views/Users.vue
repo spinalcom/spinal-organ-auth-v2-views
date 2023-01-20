@@ -24,19 +24,9 @@ with this file. If not, see
 
 <template>
   <v-app class="app">
-    <!-- <ul class="list-group mt-5">
-      <li
-        class="list-group-item list-group-item-action"
-        v-for="data in dataList"
-        :key="data.dynamicId"
-      >
-        <h3>{{ data.name }}</h3>
-      </li>
-    </ul> -->
 
     <div class="d-flex justify-end" style="width: 100%; min-width: 980px">
-      <v-card
-        class="
+      <v-card class="
           d-flex
           flex-column
           ml-2
@@ -46,15 +36,8 @@ with this file. If not, see
           pr-1
           justify-center
           rounded-lg
-        "
-        elevation="2"
-      >
-        <BlueButton
-          @click.native="adduser()"
-          :icon="'mdi-plus'"
-          title="AJOUTER UN UTILISATEUR"
-          :val="'blue'"
-        />
+        " elevation="2">
+        <BlueButton @click.native="adduser()" :icon="'mdi-plus'" title="AJOUTER UN UTILISATEUR" :val="'blue'" />
       </v-card>
     </div>
     <BackupInformation title="TABLES DES UTILISATEURS">
@@ -62,47 +45,24 @@ with this file. If not, see
         <div style="width: 22%">Nom d'utilisateur</div>
         <div style="width: 78%">État</div>
       </div>
-      <div v-for="item in userList" :key="item.id">
+      <div v-for="item in this.userList" :key="item.id">
+
         <div class="d-flex mb-2">
           <div style="width: 22%" class="content-list rounded-l-lg pl-10">
             {{ item.userName }}
           </div>
           <div style="width: 78%" class="content-list">
             <div class="stateButton-container">
-              <StateButton
-                :obj="'bos'"
-                :content1="'BOS 1'"
-                :content2="'ÉTAGE 24'"
-                :icon="'mdi-chip'"
-              />
-              <StateButton
-                :obj="'app'"
-                :content1="'APPLICATION'"
-                :content2="'PROFIL 10'"
-                :icon="'mdi-apps'"
-              />
+              <StateButton :obj="'bos'" :content1="item.type" :content2="''" :icon="'mdi-chip'" />
+              <StateButton :obj="'app'" :content1="'TEST'" :content2="''" :icon="'mdi-apps'" />
             </div>
-            <div class="stateButton-container">
-              <StateButton
-                :obj="'bos'"
-                :content1="'BOS 1'"
-                :content2="'ÉTAGE 24'"
-                :icon="'mdi-chip'"
-              />
-              <StateButton
-                :obj="'app'"
-                :content1="'APPLICATION'"
-                :content2="'PROFIL 10'"
-                :icon="'mdi-apps'"
-              />
-            </div>
+            <!-- <div class="stateButton-container">
+              <StateButton :obj="'bos'" :content1="'BOS 1'" :content2="'ÉTAGE 24'" :icon="'mdi-chip'" />
+              <StateButton :obj="'app'" :content1="'APPLICATION'" :content2="'PROFIL 10'" :icon="'mdi-apps'" />
+            </div> -->
           </div>
           <div class="content-list rounded-r-lg hover">
-            <button
-              class="pr-2"
-              style="height: 100%"
-              @click="displayDetail(item)"
-            >
+            <button class="pr-2" style="height: 100%" @click="displayDetail(item)">
               <v-icon>mdi-arrow-right</v-icon>
             </button>
           </div>
@@ -117,7 +77,7 @@ import BlueButton from "../Components/BlueButton.vue";
 import BackupInformation from "../Components/BackupInformation.vue";
 import StateButton from "../Components/StateButton.vue";
 import { mapActions, mapGetters } from "vuex";
-import { mapState } from "vuex";
+
 
 export default {
   name: "App",
@@ -129,31 +89,29 @@ export default {
   data: () => ({
     display: false,
     token: "",
-    userList: [
-      {
-        id: 1,
-        userName: "gab du bour"
-      }
-    ]
   }),
-
   methods: {
-    getData() {
-      this.$store.dispatch("module/fetchData");
-      console.log(this.$store.dispatch("module/fetchData"));
+
+    updateUserlist() {
+      this.$store.dispatch('users/getUsers')
     },
+
+    //Route : 
     displayDetail(item) {
-      this.$router.push("/DetailUser");
+      this.$router.push({ name: "DetailUser", query: { id: item.id } });
     },
-    adduser(item) {
+
+    adduser() {
       this.$router.push("/AddUser");
-    }
+    },
+
   },
   computed: {
-    ...mapState(["module"])
+    ...mapGetters({ userList: 'users/userList' }),
   },
+
   created() {
-    this.getData();
+    this.updateUserlist()
   }
 };
 </script>

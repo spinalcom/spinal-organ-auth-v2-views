@@ -65,7 +65,8 @@
 
 <script>
 import CardMenu from "../Components/CardMenu";
-
+import { mapState } from 'vuex'
+import { mapActions } from 'vuex'
 export default {
   components: {
     CardMenu,
@@ -75,7 +76,17 @@ export default {
       search: "",
     },
   }),
-
+  computed: {
+    ...mapState({
+      data: state => state.module.data
+    })
+    
+  },
+  methods: {
+    ...mapActions({
+      fetchData: 'module/fetchData'
+    })
+  }
 }
 </script>
 

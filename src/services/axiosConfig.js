@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 SpinalCom - www.spinalcom.com
+ * Copyright 2022 SpinalCom - www.spinalcom.com
  *
  * This file is part of SpinalCore.
  *
@@ -21,28 +21,26 @@
  * with this file. If not, see
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
+// const axios = require('axios');
+import axios from "axios";
+export const instanceAxios = axios.create({
+  baseURL: 'http://localhost:9060/',
+  timeout: 1000,
+  headers: { 'X-Custom-Header': 'foobar' },
+});
 
-import axios from 'axios';
-export default {
-  namespaced: true,
-  state: {
-    data: []
-  },
-  getters: {
-    dataList: state => state.data
-  },
-  actions: {
-    async fetchData({ commit }) {
-      const response = await axios.get("http://localhost:9056/api/v1/context/list");
-      commit("setData", response.data);
-    }
-  },
-  mutations: {
-    setData: (state, data) => (
-      state.data = data
-    )
+import router from "../router";
+
+instanceAxios.interceptors.response.use((response) => {
+  return response;
+}, (error) => {
+  
+  if (error.response.status === 401) {
+    localStorage.removeItem('token');
+    router.push("/Login");
+  } if (error.response && error.response.data) {
+
+    return Promise.reject(error.response.data);
   }
-}
-
-
-
+  return Promise.reject(error.message);
+});
