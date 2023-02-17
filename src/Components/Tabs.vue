@@ -1,9 +1,11 @@
 <template>
     <v-tabs v-model="tab" background-color="transparent" hide-slider grow>
+       
         <v-tab v-for="item in items" :key="item">
             {{ item }}
         </v-tab>
-        <v-tabs-items  v-model="tab">
+       
+        <v-tabs-items style="border: 1px solid black; border-top: none;border-bottom:1px solid black; border-bottom-left-radius: 6px; border-bottom-right-radius: 6px;transform: translate(0,-1.3%);" v-model="tab">
             <slot></slot>
         </v-tabs-items>
     </v-tabs>
@@ -31,7 +33,7 @@ export default {
 }
 
 .v-tab.v-tab--active {
-    background: #F9F9F9;
+    background: rgb(233, 233, 233);
     text-align: left;
     border: 1px solid #214353;
     border-bottom: 0px solid #214353;

@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Navbar></Navbar>
+    <Navbar v-if="!isLoginRoute"></Navbar>
     <router-view id="content" />
   </div>
 </template>
@@ -14,7 +14,13 @@ export default {
   },
   methods: {
     
-  }
+  },
+  computed: {
+    isLoginRoute() {
+      return this.$route.path === '/Login';
+    },
+  },
+
 }
 </script>
 

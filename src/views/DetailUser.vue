@@ -1,7 +1,46 @@
 <template>
     <v-app>
         <v-main>
-            <InformationBar @click.native="toto()" v-on:btn2="displayEditUser()" v-on:btn3="deletebtn()"
+            <div v-if="show" class="popup_platform">
+                <v-card class="popup">
+                    <div @click="show = false" class="popup-closebtn">
+                        <span>X</span>
+                    </div>
+                    <p class="mb-6">AJOUTER À UNE PLATFORME</p>
+                    <div class="choix_platform">
+                        <SelectUser v-model="formPlatformObject.platform" @change.native="getuserfromplatform()"
+                            title="PLATFORME" id="userType" :tab="platformList" />
+                        <SelectUser v-model="formPlatformObject.userProfileValue" :tab="userProfileList"
+                            title="PROFILE D'UTILISATEUR" id="userType" />
+                    </div>
+                    <div @click="editUserPlatform()" class="mt-4 ml-1 popup-btn-ajouter">
+                        <span>AJOUTER</span>
+                    </div>
+                    <div @click="show = false" class="mt-4 ml-1 popup-btn-fermer">
+                        <span>FERMER</span>
+                    </div>
+                </v-card>
+            </div>
+            <div v-if="showrestpass" class="popup_platform">
+                <v-card class="popup">
+                    <div class="mb-3">NOUVEAU MOT DE PASSE</div>
+                    <InputPass v-model="password" class="entrance" title="NOUVEAU MOT DE PASSE" id="password" />
+                    <button @click="generatePassword" type="button" class="btn-creer ">GENERER
+                        UN MOT DE PASSE</button>
+                    <div @click="copiepass()" class="mt-2 ml-1 popup-btn-copier">
+                        <span>COPIER</span>
+                    </div>
+                    <div @click="editUser()" class="mt-2 ml-1 popup-btn-ajouter">
+                        <span>MODIFIER</span>
+                    </div>
+                    <div @click="showrestpass = false" class="mt-2 ml-1 popup-btn-fermer">
+                        <span>FERMER</span>
+                    </div>
+                </v-card>
+            </div>
+            
+
+            <InformationBar v-on:btn1="showplatform()" v-on:btn2="displayEditUser()" v-on:btn3="deletebtn()"
                 title="INFORMATION DE L'UTILISATEUR" :title2="this.detailUser.userName"
                 :icon="require('../assets/image/USE_icon.svg')">
                 <div class="d-flex">
@@ -20,6 +59,12 @@
                     <div class="d-flex flex-column mr-16">
                         <span class="bar-sub-title">TELEPHONE</span>
                         <span class="bar-information">{{ this.detailUser.telephone }}</span>
+                    </div>
+                    <div class="d-flex flex-column mr-16">
+                        
+                            <BlueButton @click.native="showrestpass = true" :icon="'mdi-lock-reset'"
+                                title="Modifier le mot de passe " :val="'blue'" />
+
                     </div>
                 </div>
                 <div class="d-flex flex-column mr-16">
@@ -51,7 +96,7 @@
                                 </v-card-title>
                                 <v-data-table fixed-header style="background-color: #F7F7F7;" :footer-props="{
                                     'items-per-page-options': [10, -1]
-                                }" :items-per-page="30" height="45vh" :headers="headers" :items="logList"
+                                }" :items-per-page="30" height="45vh" :headers="headers" :items="this.formattedLogList"
                                     :search="search">
                                 </v-data-table>
                             </div>
@@ -66,9 +111,12 @@
 <script>
 import InformationBar from "../Components/InformationBar.vue";
 import BackupInformation from "../Components/BackupInformation.vue";
+import BlueButton from "../Components/BlueButton.vue";
 import Tabs from "../Components/Tabs.vue";
 import FiltreBar from "../Components/FiltreBar.vue";
+import SelectUser from "../Components/SelectUser.vue";
 import { mapActions, mapGetters } from "vuex";
+import InputPass from "../Components/InputPassword.vue"
 
 export default {
     name: "App",
@@ -76,11 +124,25 @@ export default {
         InformationBar,
         BackupInformation,
         Tabs,
-        FiltreBar
+        FiltreBar,
+        SelectUser,
+        BlueButton,
+        InputPass
     },
     data() {
         return {
+            newuser: {},
+            password: '',
+            formPlatformObject: {
+                platform: [],
+                userProfileValue: [],
+                plat: [],
+            },
+            userProfileList: [],
+            logListFormatted: [],
             search: '',
+            show: false,
+            showrestpass: false,
             headers1: [
                 { text: 'Nom', value: '_platform.name' },
                 { text: 'Statut', value: '_platform.statusPlatform' },
@@ -101,10 +163,88 @@ export default {
 
     },
     methods: {
+        ...mapActions({ editUserPass: 'users/updateUser' }),
 
-        // toto(){
-        //     console.log(this.platformObjectList);
-        // },
+        copiepass() {
+            const dummyElement = document.createElement("input");
+            dummyElement.value = this.password;
+            document.body.appendChild(dummyElement);
+            dummyElement.select();
+            document.execCommand("copy");
+            document.body.removeChild(dummyElement);
+        },
+        editUser() {
+            if (this.password.length > 8) {
+                this.newuser = this.detailUser;
+                this.newuser.password = this.password;
+                this.formateduser();
+                var profile = [this.newuser, this.$route.query.id];
+                this.editUserPass(profile);
+                this.showrestpass = false
+            }
+        },
+
+        editUserPlatform() {
+            // console.log('toto');
+            this.show = false;
+            this.newuser = this.detailUser;
+            this.formateduser();
+            // console.log(this.formPlatformObject.userProfileValue);
+
+            let newPlatform = {
+                platformId: this.formPlatformObject.platform.id,
+                platformName: this.formPlatformObject.platform.name,
+                userProfile: {
+                    userProfileAdminId: this.formPlatformObject.userProfileValue.id,
+                    userProfileBosConfigId: this.formPlatformObject.userProfileValue.userProfileId,
+                    userProfileName: this.formPlatformObject.userProfileValue.name
+                }
+            };
+
+            // console.log(newPlatform);
+            let existingPlatform = this.newuser.platformList.some(platform => platform.platformName === newPlatform.platformName);
+
+            if (existingPlatform) {
+                console.log('Error: Platform name already exists.');
+                alert('Error: Platform name already exists.');
+            } else {
+                this.newuser.platformList.push(newPlatform);
+                var profile = [this.newuser, this.$route.query.id];
+                this.editUserPass(profile);
+                // console.log('pas pareil');
+            }
+
+            // console.log(this.newuser);
+        },
+
+
+        formateduser() {
+            delete this.newuser.type;
+            delete this.newuser.id;
+            delete this.newuser.name;
+            this.newuser.platformList.forEach(platform => {
+                delete platform.idPlatformOfAdmin;
+            });
+        },
+
+        generatePassword() {
+            let password = "";
+            const minLength = 16;
+            const possibleCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{};':\"<>,.?/\\|";
+            for (let i = 0; i < minLength; i++) {
+                password += possibleCharacters.charAt(Math.floor(Math.random() * possibleCharacters.length));
+            }
+            if (!/[A-Z]/.test(password)) {
+                password = password.substring(0, 15) + "ABCDEFGHIJKLMNOPQRSTUVWXYZ".charAt(Math.floor(Math.random() * 26));
+            }
+            this.password = password
+        },
+
+        showplatform() {
+            this.show = true;
+            // console.log(this.platformList);
+        },
+
         ...mapActions({ deleteUser: 'users/deleteUser' }),
 
         deletebtn() {
@@ -129,32 +269,60 @@ export default {
                 a.style.position = "fixed";
             }
         },
+        getDataFromStore() {
+            this.$store.dispatch('users/getplatformList');
+        },
+        async getuserfromplatform() {
+
+            var id = this.formPlatformObject.platform.id
+            // console.log(id);
+            this.userProfileList = await this.$store.dispatch('users/getUserProfileList', id);
+        },
+    },
+    computed: {
+
+        ...mapGetters({
+            detailUser: 'users/detailUser',
+            platformObjectList: 'users/platformObjectList',
+            logList: 'users/logList',
+            platformList: 'users/platformList',
+        }),
         formattedLogList() {
             return this.logList.map(log => {
                 log.date = new Date(log.date).toLocaleString();
                 return log;
             });
-        },
+        }
 
-    },
-    computed: {
-        ...mapGetters({
-            detailUser: 'users/detailUser',
-            platformObjectList: 'users/platformObjectList',
-            logList: 'users/logList'
-        }),
     },
 
     created() {
         this.updateUser()
+        this.getDataFromStore();
     }
 }
 </script>
   
 <style scoped >
+*:focus {
+    outline: none;
+}
+
 .v-application {
     background: #eeeeee00;
 }
+
+.reset_btn {
+    width: 100%;
+    /* background-color: red; */
+    position: absolute;
+    top: -65px;
+    display: flex;
+    justify-content: end;
+    min-width: 980px;
+}
+
+
 
 .v-data-table>>>td {
     background-color: white;
@@ -215,5 +383,121 @@ export default {
     margin-top: 2px;
     margin-left: 1px;
     padding-left: 8px;
+}
+
+.btn-creer {
+    min-height: 35px;
+    border: 0px;
+    padding-left: 30px;
+    padding-right: 30px;
+    background: #14202C;
+    border-radius: 6px;
+    color: white;
+    /* margin-left: 5px; */
+    margin-top: 20px;
+    font: normal normal normal 11px/13px Charlevoix Pro;
+    letter-spacing: 1.1px;
+
+}
+
+.choix_platform {
+    width: 99%;
+    height: 150px;
+    background-color: #EAEEF0;
+    border-radius: 6px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.popup {
+    position: relative;
+    width: 615px;
+    height: 280px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    transform: translate(-50%, -100%);
+    left: 50%;
+    top: 50%;
+    border-radius: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.popup-closebtn {
+    top: 7px;
+    right: 7px;
+    width: 40px;
+    height: 40px;
+    border: 2px solid #E9ECEE;
+    opacity: 1;
+    position: absolute;
+    border-radius: 6px !important;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    font-size: 15px;
+    font-family: Arial, Helvetica, sans-serif;
+    cursor: pointer;
+}
+
+.popup-btn-fermer {
+    position: absolute;
+    left: 73%;
+    top: 75%;
+    width: 145px;
+    height: 40px;
+    background-color: #14202C;
+    border-radius: 6px !important;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font: normal normal normal 11px/13px Charlevoix Pro;
+    letter-spacing: 1.1px;
+}
+
+.popup-btn-ajouter {
+    position: absolute;
+    left: 48%;
+    top: 75%;
+    width: 145px;
+    height: 40px;
+    background-color: #14202C;
+    border-radius: 6px !important;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font: normal normal normal 11px/13px Charlevoix Pro;
+    letter-spacing: 1.1px;
+}
+
+.popup-btn-copier {
+    position: absolute;
+    left: 23%;
+    top: 75%;
+    width: 145px;
+    height: 40px;
+    background-color: #14202C;
+    border-radius: 6px !important;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font: normal normal normal 11px/13px Charlevoix Pro;
+    letter-spacing: 1.1px;
+}
+
+.popup_platform {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100vw;
+    height: 100vh;
+    z-index: 99;
+    backdrop-filter: blur(5px);
 }
 </style>

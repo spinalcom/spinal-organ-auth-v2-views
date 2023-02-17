@@ -45,47 +45,50 @@ export default {
         userListLinkPlatform: state => state.userListLinkPlatform,
     },
     actions: {
-        async getUsers({ dispatch }) {
+        async getUsers({ dispatch }, platformId) {
             const rep = await instanceAxios.instanceAxios.get("/users", {
                 headers: {
                     "Content-Type": "application/json",
                     "x-access-token": localStorage.getItem("token"),
                 }
             });
-            dispatch('getUsersFromPltaform', rep.data)
+            // console.log(platformId);
+            dispatch('getUsersFromPltaform', { platformId, data: rep.data })
         },
 
-        getUsersFromPltaform({ commit }, tab) {
+        getUsersFromPltaform({ commit }, { platformId, data }) {
             var users = [];
-            for (const user of tab) {
-                if (user.platformList) {
-                    for (const platform of user.platformList) {
-                        if (platform.platformId === this.itemSelected.id) {
-                            users.push(user);
-                        }
-                    }
+            for (const user of data) {
+              if (user.platformList) {
+                for (const platform of user.platformList) {
+                  if (platform.platformId === platformId) {  
+                    users.push(user);
+                  }
                 }
+              }
             }
             commit("setuserListLinkPlatform", users);
-        },
+          },
 
-        async getApplications({ dispatch }) {
+        async getApplications({ dispatch }, platformId) {
             const rep = await instanceAxios.instanceAxios.get("/applications", {
                 headers: {
                     "Content-Type": "application/json",
                     "x-access-token": localStorage.getItem("token"),
                 }
             });
-            dispatch('getAPPSFromPltaform', rep.data)
+            dispatch('getAPPSFromPltaform', { platformId, data: rep.data })
         },
 
-        getAPPSFromPltaform({ commit }, tab) {
+        getAPPSFromPltaform({ commit }, { platformId, data }) { 
             var apps = [];
-            for (const app of tab) {
+            for (const app of data) {
                 if (app.platformList) {
                     for (const platform of app.platformList) {
-                        if (platform.platformId === this.itemSelected.id) {
+                        // console.log(platform.platformId);
+                        if (platform.platformId === platformId) {
                             apps.push(app);
+                            // console.log(app);
                         }
                     }
                 }

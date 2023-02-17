@@ -10,7 +10,7 @@
                 </v-card-title>
                 <v-data-table fixed-header style="background-color: #F7F7F7;" :footer-props="{
                     'items-per-page-options': [10, -1]
-                }" :items-per-page="30" height="70vh" :headers="headers" :items="this.logList" :search="search">
+                }" :items-per-page="30" height="70vh" :headers="headers" :items="this.formattedLogList" :search="search">
                 </v-data-table>
             </div>
         </v-card>
@@ -59,6 +59,12 @@ export default {
     },
     computed: {
         ...mapGetters({ logList: 'logs/getlogList' }),
+        formattedLogList() {
+            return this.logList.map(log => {
+                log.date = new Date(log.date).toLocaleString();
+                return log;
+            });
+        }
     },
 
     created() {

@@ -2,9 +2,6 @@
   <v-app>
     <v-main class="ml-12">
       <div>
-        <p style="min-width: 500px;" class="information-menu">
-          Configurez les accès aux données de vos batiments.<br>
-          Vous pouvez garder en favoris une visualisation en cliquant sur +</p>
         <div class="d-flex">
           <div style="min-width: 325px;">
             <v-icon style="color: black" class="input-icon">mdi-magnify</v-icon>
@@ -29,17 +26,16 @@
           <div class="menu-administraton">
             <hr style="min-width: 1100px;" class="line-division">
             <div class="container-cardmenu">
-              <CardMenu :verif="filtersData.search" :link="'platforms'" :title="'PLATEFORME'"
+              <CardMenu :icon="'mdi-shield-crown'" :verif="filtersData.search" :link="'platforms'" :title="'PLATEFORME'"
                 :subtitle="'configuration des BOS'">
               </CardMenu>
-              <CardMenu :verif="filtersData.search" :link="'users'" :title="'UTILISATEURS'"
+              <CardMenu :icon="'mdi-account'" :verif="filtersData.search" :link="'users'" :title="'UTILISATEURS'"
                 :subtitle="'Gestion des utilisateurs'">
               </CardMenu>
-              <CardMenu :verif="filtersData.search" :link="'Logs'" :title="'LOGS'"
+              <CardMenu :icon="'mdi-view-list'" :verif="filtersData.search" :link="'Logs'" :title="'LOGS'"
                 :subtitle="'Connexions et utilisations du logiciel.'"></CardMenu>
-              <CardMenu :verif="filtersData.search" :link="'Application'" :title="'APPLICATION'"
+              <CardMenu :icon="'mdi-apps'" :verif="filtersData.search" :link="'Application'" :title="'APPLICATION'"
                 :subtitle="'accès des utilisateurs aux apps'"></CardMenu>
-              
             </div>
           </div>
         </div>
@@ -51,9 +47,9 @@
           <div class="menu-administraton">
             <hr style="min-width: 1100px;" class="line-division">
             <div class="container-cardmenu">
-              <CardMenu :verif="filtersData.search" :link="'AddUser'" :title="'AJOUTER UN UTILISATEUR'"
+              <CardMenu :icon="'mdi-account'" :verif="filtersData.search" :link="'AddUser'" :title="'AJOUTER UN UTILISATEUR'"
                 :subtitle="'Créer un utilisateur'"></CardMenu>
-              <CardMenu :verif="filtersData.search" :link="'AddApp'" :title="'AJOUTER UNE APPLICATION'"
+              <CardMenu :icon="'mdi-apps'" :verif="filtersData.search" :link="'AddApp'" :title="'AJOUTER UNE APPLICATION'"
                 :subtitle="'Créer une application'"></CardMenu>
             </div>
           </div>

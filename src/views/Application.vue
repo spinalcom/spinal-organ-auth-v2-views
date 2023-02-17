@@ -5,7 +5,7 @@
         <BlueButton @click.native="displayAdd()" :icon="'mdi-plus'" title="AJOUTER UNE APPLICATION" :val="'blue'" />
       </v-card>
     </div>
-    <BachupInformation title="TABLE DES APPLICATIONS">
+    <BachupInformation  title="TABLE DES APPLICATIONS">
       <div class="d-flex mb-2 mt-4">
         <div style="width: 22%;">Nom d'utilisateur</div>
         <div style="width: 78%">État</div>
@@ -14,14 +14,10 @@
         <div class="d-flex mb-2">
           <div style="width: 22%;" class="content-list rounded-l-lg pl-10">{{ item.name }}</div>
           <div style="width: 78% ;" class="content-list">
-            <div class="d-flex" style="width: 100%">
-              <StateButton :obj="'bos'" :content1="'BOS 1'" :content2="'ÉTAGE 24'" :icon="'mdi-chip'" />
-              <StateButton :obj="'app'" :content1="'APPLICATION'" :content2="'PROFIL 10'" :icon="'mdi-apps'" />
+            <div v-for="(platform, index) in item.platformList" class="d-flex" style="width: 100%">
+              <StateButton :obj="'bos'" :content1="item.platformList[index].platformName" :content2="''" :icon="'mdi-chip'" />
+              <StateButton :obj="'app'" :content1="item.platformList[index].appProfile.appProfileName"  :icon="'mdi-apps'" />
             </div>
-            <!-- <div class="d-flex" style="width: 100%">
-              <StateButton :obj="'bos'" :content1="'BOS 1'" :content2="'ÉTAGE 24'" :icon="'mdi-chip'" />
-              <StateButton :obj="'app'" :content1="'APPLICATION'" :content2="'PROFIL 10'" :icon="'mdi-apps'" />
-            </div> -->
           </div>
           <div class="content-list rounded-r-lg">
             <button class="pr-3" style="height: 100%;" @click="displayDetail(item)">
@@ -55,6 +51,8 @@ export default {
   }),
 
   methods: {
+    
+
     updateAppList() {
       this.$store.dispatch('applications/getApplist')
     },
@@ -86,6 +84,7 @@ export default {
 }
 
 .content-list {
+  border: 1px solid rgba(216, 216, 216, 0.623);
   background-color: #ffffff;
   display: flex;
   align-items: center;

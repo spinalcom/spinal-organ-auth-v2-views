@@ -39,7 +39,7 @@ export default {
     },
 
     async deleteUser({ commit }, user) {
-      console.log(user);
+      // console.log(user);
       let ask = true
       let r = true;
       if (ask)
@@ -63,9 +63,7 @@ export default {
 
 
     async updateUser({ commit }, profile) {
-      console.log(profile[1], profile[0]);
-      console.log('////////////////////////////////////////////////////////////////');
-      console.log("cccc");
+      console.log(profile);
       const rep = await instanceAxios.instanceAxios.put(
         `/users/${profile[1]}`,
         profile[0],
@@ -94,8 +92,8 @@ export default {
     },
 
     async getUserProfileList({ commit }, id) {
-      console.log(id);
-      console.log('toto');
+      // console.log(id);
+      // console.log('toto');
       const rep = await instanceAxios.instanceAxios.get(
         `/platforms/${id}/getUserProfileList`,
         {
@@ -148,6 +146,7 @@ export default {
     },
 
     async getplatforms({ commit, dispatch }, _user) {
+      commit('RESET_PLATFORM_OBJECT');
       for (const platform of _user.platformList) {
         const _platform = await dispatch('getplatform', platform.platformId);
         let infoPlatform = {
@@ -205,7 +204,10 @@ export default {
     ),
     SET_SELECTED_PLATFORM_OBJECT_LIST: (state, selectedplatformObjectList) => (
       state.selectedplatformObjectList = selectedplatformObjectList
-    )
+    ),
+    RESET_PLATFORM_OBJECT(state) {
+      state.platformObjectList = [];
+  }
   }
 }
 

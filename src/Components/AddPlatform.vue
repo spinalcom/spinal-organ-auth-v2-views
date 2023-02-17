@@ -2,8 +2,8 @@
     <div>
         <div v-if="types == 'user'">
             <div v-for="(item, index) in nbPlatform" :key="item" class="ajout-platform"
-                :style="disableobjet[index].plat == true ? 'background : #e6f3ed' : ''" :id="index">
-                <div class="selector">
+                :style="disableobjet[index]? disableobjet[index].plat == true ? 'background : #e6f3ed' : '' : ''" :id="index">
+                <div @click="setplatform()" class="selector">
                     <SelectUser :id=index class="platform" @change.native="getuserfromplatform()" :tab="platformList"
                         v-model="formPlatformObject.platform" title="PLATFORM"
                         :disabled="disableobjet[index] ? disableobjet[index].plat == true ? true : false : false" />
@@ -22,14 +22,14 @@
         <div v-if="types == 'app'">
             <div v-for="(item, index) in nbPlatform" :key="item" class="ajout-platform"
                 :style="disableobjet[index].plat == true ? 'background : #e6f3ed' : ''" :id="index">
-                <div class="selector">
+                <div  class="selector">
                     <SelectUser :id=index class="platform" @change.native="getAppProfileList()" :tab="platformList"
                         v-model="formPlatformObjectapp.platform" title="PLATFORM"
                         :disabled="disableobjet[index] ? disableobjet[index].plat == true ? true : false : false" />
-                    <SelectUser @change.native="" :id=index class="profilut"
+                    <SelectUser  @change.native="" :id=index class="profilut"
                         :disabled="disableobjet[index] ? disableobjet[index].plat == true ? true : false : false"
-                        :tab="userProfileList" v-model="formPlatformObjectapp.userProfileValue"
-                        title="PROFIL UTILISATEUR" />
+                        :tab="appProfileList" v-model="formPlatformObjectapp.appProfileValue"
+                        title="PROFIL APPLICATION" />
                 </div>
                 <button @click="deletePlatformObjectitemapp(index)" type="button" class="red-cross">X</button>
             </div>
@@ -50,18 +50,19 @@ export default {
     components: {
         SelectUser,
     },
-    props: ['types','tab'],
+    props: ['types','tab','sendplatform'],
     data() {
         return {
+            platformsend : [],
             nbPlatform: 1,
             formPlatformObject: {
                 platform: [],
-                userProfileValue: null,
+                userProfileValue: [],
                 plat: [],
             },
             formPlatformObjectapp: {
                 platform: [],
-                appProfileValue: null
+                appProfileValue: []
             },
             userProfileList: [],
             appProfileList: [],
@@ -105,11 +106,12 @@ export default {
         addplatform() {
             var test = true;
             var plat = true;
+            console.log(this.platformObjectList);//prend l object
             for (const platformObject of this.platformObjectList) {
-                if (platformObject.platformId === this.formPlatformObject.platform.id) {
+                if (platformObject.platformId === this.formPlatformObject.platform.id) {//verification unicité
                     alert("you cannot select platform even twice");
                     this.formPlatformObject.platform = [];
-                    this.formPlatformObject.userProfileValue = null;
+                    this.formPlatformObject.userProfileValue = [];
                     test = false;
                     plat = false;
                     this.nbPlatform--;
@@ -127,7 +129,7 @@ export default {
                     }
                 });
                 this.formPlatformObject.platform = [];
-                this.formPlatformObject.userProfileValue = null;
+                this.formPlatformObject.userProfileValue = [];
             }
             if (plat == true) {
                 this.nbPlatform++;
@@ -143,11 +145,12 @@ export default {
         addplatformapp() {
             var test = true;
             var plat = true;
+            // console.log(this.formPlatformObjectapp);
             for (const platformObject of this.platformObjectList) {
                 if (platformObject.platformId === this.formPlatformObjectapp.platform.id) {
                     alert("you cannot select platform even twice");
                     this.formPlatformObjectapp.platform = [];
-                    this.formPlatformObjectapp.appProfileValue = null;
+                    this.formPlatformObjectapp.appProfileValue = [];
                     test = false;
                     plat = false;
                     this.nbPlatform--;
@@ -164,7 +167,7 @@ export default {
                     }
                 });
                 this.formPlatformObjectapp.platform = [];
-                this.formPlatformObjectapp.appProfileValue = null;
+                this.formPlatformObjectapp.appProfileValue = [];
             }
             if (plat == true) {
                 this.nbPlatform++;
@@ -185,6 +188,7 @@ export default {
         },
 
         deletePlatformObjectitemapp(index) {
+            // console.log(this.platformObjectList);
             document.getElementById(index).style.display = "none";
             this.platformObjectList.splice(index, 1);
             this.disableobjet[index].plat = false;
@@ -197,6 +201,7 @@ export default {
             this.userProfileList = await this.$store.dispatch('users/getUserProfileList', id);
         },
 
+
         async getAppProfileList() {
             var id = this.formPlatformObjectapp.platform.id
             this.appProfileList = await this.$store.dispatch('applications/getAppProfileList', id);
@@ -204,17 +209,40 @@ export default {
 
         getDataFromStore() {
             this.$store.dispatch('users/getplatformList');
-        }
+        },
+        
 
+        setplatform(){
+            // console.log("laa");
+            // console.log(this.sendplatform);
+            // console.log(this.formPlatformObject);
+            // this.sendplatform.forEach(element => {
+            //     this.formPlatformObject.platform.id = element.platformId;
+            //     this.formPlatformObject.platform.name = element.platformName;
+            //     this.formPlatformObject.userProfileValue.name = element.userProfile.userProfileName;
+            //     this.formPlatformObject.userProfileValue.userProfileId = element.userProfile.userProfileAdminId;
+            //     console.log("1");
+            //     console.log(this.formPlatformObject);
+            //     console.log("2");
+            //     // this.addplatform();
+            // });
+            // this.nbPlatform = this.sendplatform.length
+            // formPlatformObject.platform = 
+            // console.log("laa");
+            // this.nbPlatform = this.sendplatform.length
+
+        }
     },
     computed: {
         ...mapGetters({
             platformList: 'users/platformList',
 
         }),
+       
     },
-    created() {
+    mounted() {
         this.getDataFromStore();
+        this.setplatform();
     },
     
 

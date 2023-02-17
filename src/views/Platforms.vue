@@ -1,7 +1,7 @@
 <template>
     <v-app class="app">
         <div class="d-flex justify-end" style="width: 100%; min-width: 980px;">
-            <InputPassword :readonly="true" id="password" v-model="this.registerKey.value" />
+            <InputPassword :readonly="true" id="password" v-model="this.token" />
             <v-card class="d-flex flex-column ml-2 pl-1 pt-1 pb-1 pr-1 justify-center rounded-lg" elevation="2">
                 <BlueButton @click.native="generateKey()" :icon="'mdi-sync'" title="GÉNERER UNE CLÉ" :val="'blue'" />
             </v-card>
@@ -32,7 +32,8 @@
                 <div class="d-flex mb-2">
                     <div style="width:20% ; min-width: 230px;" class="d-flex flex-column">
                         <div class="btn-valider-user rounded-l-lg">
-                            <StateButton :obj="'bos'" :content1="item.name" :icon="'mdi-chip'" />
+                            <!-- <StateButton :obj="'bos'" :content1="item.name" :icon="'mdi-chip'" /> -->
+                            {{ item.name }}
                         </div>
 
                     </div>
@@ -102,7 +103,7 @@ export default {
         InputPassword
     },
     data: () => ({
-        token: "",
+        // token: "",
         show: false,
     }),
 
@@ -122,7 +123,7 @@ export default {
         },
         ...mapActions({
             generateRegisterKey: 'platforms/generateRegisterKey'
-        })
+        }),
 
     },
     computed: {
@@ -130,9 +131,12 @@ export default {
             platformList: 'platforms/platformList',
             registerKey: 'platforms/registerKey'
         }),
-        
+        token() {
+            return this.registerKey && this.registerKey.value ? this.registerKey.value : null;
+        }
     },
     created() {
+
         this.getDataFromStore();
     }
 }

@@ -40,7 +40,7 @@ with this file. If not, see
         <BlueButton @click.native="adduser()" :icon="'mdi-plus'" title="AJOUTER UN UTILISATEUR" :val="'blue'" />
       </v-card>
     </div>
-    <BackupInformation title="TABLES DES UTILISATEURS">
+    <BackupInformation @click.native="showapplist()" title="TABLES DES UTILISATEURS">
       <div class="d-flex mb-2 mt-4">
         <div style="width: 22%">Nom d'utilisateur</div>
         <div style="width: 78%">État</div>
@@ -52,14 +52,10 @@ with this file. If not, see
             {{ item.userName }}
           </div>
           <div style="width: 78%" class="content-list">
-            <div class="stateButton-container">
-              <StateButton :obj="'bos'" :content1="item.type" :content2="''" :icon="'mdi-chip'" />
-              <StateButton :obj="'app'" :content1="'TEST'" :content2="''" :icon="'mdi-apps'" />
+            <div v-for="(platform, index) in item.platformList"  class="stateButton-container">
+              <StateButton :obj="'bos'" :content1="item.platformList[index].platformName" :content2="''" :icon="'mdi-chip'" />
+              <StateButton :obj="'app'" :content1="item.platformList[index].userProfile.userProfileName" :content2="''" :icon="'mdi-apps'" />
             </div>
-            <!-- <div class="stateButton-container">
-              <StateButton :obj="'bos'" :content1="'BOS 1'" :content2="'ÉTAGE 24'" :icon="'mdi-chip'" />
-              <StateButton :obj="'app'" :content1="'APPLICATION'" :content2="'PROFIL 10'" :icon="'mdi-apps'" />
-            </div> -->
           </div>
           <div class="content-list rounded-r-lg hover">
             <button class="pr-2" style="height: 100%" @click="displayDetail(item)">
@@ -91,7 +87,9 @@ export default {
     token: "",
   }),
   methods: {
-
+    showapplist(){
+      console.log(this.userList);
+    },
     updateUserlist() {
       this.$store.dispatch('users/getUsers')
     },
@@ -124,6 +122,7 @@ export default {
 }
 
 .content-list {
+  border: 1px solid rgba(216, 216, 216, 0.623);
   background-color: #ffffff;
   display: flex;
   align-items: center;

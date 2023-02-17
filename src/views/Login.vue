@@ -52,7 +52,8 @@ export default {
 .app {
     font: normal normal normal 10px/12px Charlevoix Pro;
     letter-spacing: 1px;
-    background: #eeeeee00;
+    background: #881e1e00;
+
 }
 
 .popup-closebtn {
@@ -115,5 +116,6 @@ export default {
     border-radius: 10px;
     font-family: Arial, Helvetica, sans-serif;
 }
+
 </style>
   

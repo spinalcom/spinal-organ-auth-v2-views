@@ -91,8 +91,11 @@ export default {
             return rep.data;
         },
         async getplatforms({ commit, dispatch }, _app) {
+            //resetplatform
+            commit('RESET_PLATFORM_OBJECT');
             for (const platform of _app.platformList) {
-                const _platform = await this.getplatform(platform.platformId);
+                // const _platform = await this.getplatform(platform.platformId);//ne fonctionne pas
+                const _platform = await dispatch('getplatform', platform.platformId);
                 let infoPlatform = {
                     _platform: _platform,
                     appProfile: {
@@ -100,11 +103,10 @@ export default {
                         appProfileId: platform.appProfile.appProfileId
                     }
                 };
+                console.log(infoPlatform);
                 commit('ADD_PLATFORM_OBJECT', infoPlatform);
             }
-
         },
-
 
         async getAppProfileList({ commit }, id) {
             const rep = await instanceAxios.instanceAxios.get(
@@ -137,7 +139,6 @@ export default {
         },
 
         async updateApp({ commit }, profile) {
-            // console.log('aaaaaaaaaaaaaaaaa');
             // console.log(profile);
             // console.log(profile[1], profile[0]);
             const rep = await instanceAxios.instanceAxios.put(
@@ -196,6 +197,9 @@ export default {
         },
         SET_SELECTED_PLATFORM_OBJECT_LIST: (state, selectedplatformObjectList) => (
             state.selectedplatformObjectList = selectedplatformObjectList
-        )
+        ),
+        RESET_PLATFORM_OBJECT(state) {
+            state.platformObjectList = [];
+        }
     }
 }

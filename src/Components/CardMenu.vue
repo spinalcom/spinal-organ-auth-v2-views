@@ -2,7 +2,9 @@
     <div>
         <div v-if="title.toLowerCase().includes(verif.toLowerCase())" class="cardmenu">
             <div @click="nextpage(link)" class="cardMenu-leftside">
-                <div class="cardMenu-carre"></div>
+                <div class="cardMenu-carre">
+                    <v-icon class="mr-2" color="black">{{icon}}</v-icon>
+                </div>
             </div>
             <div @click="nextpage(link)" class="cardMenu-rightside">
                 <span>{{ title }}</span>
@@ -16,9 +18,9 @@
 <script>
 export default {
     name: "card-menu",
-    props: ['title', 'subtitle', 'link', 'verif'],
+    props: ['title', 'subtitle', 'link', 'verif','icon'],
     data() {
-        return {
+        return {    
         }
     },
     methods: {
@@ -31,9 +33,10 @@ export default {
   
 <style>
 .cardmenu {
-    max-width: 310px;
-    width: 270px;
-    height: 100px;
+    max-width: 410px;
+    min-width: 250px;
+    width: 22vw;
+    height:115px;
     background: white;
     background: #FFFFFF 0% 0% no-repeat padding-box;
     box-shadow: 0px 3px 10px #2E3F4A29;
@@ -49,7 +52,8 @@ export default {
 .cardMenu-leftside {
     position: relative;
     background-color: #F7F8F8;
-    width: 15%;
+    width: 10%;
+    min-width: 40px;
     padding: 6px;
     transition: 0.2s;
     border-top-left-radius: 6px;
@@ -64,7 +68,7 @@ export default {
 }
 
 .cardMenu-rightside {
-    padding-top: 18px;
+    padding-top: 12px;
     padding-left: 10px;
     display: flex;
     flex-direction: column;
@@ -74,7 +78,7 @@ export default {
     color: #14202C;
     width: 100%;
     font-weight: 1000;
-    font-size: 13px;
+    font-size: 15px;
 }
 
 .cardMenu-subtitle {
@@ -95,6 +99,10 @@ export default {
     box-shadow: 0px 3px 6px #0000000D;
     border-radius: 3px;
     opacity: 1;
+    display: flex;
+    padding-left: 2px;
+    /* justify-content: center; */
+    /* align-items: center; */
 }
 
 .addFavoritesMenu {

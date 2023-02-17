@@ -10,6 +10,29 @@
                     <span class="errors" :class="{ 'showspan': iserrors }"
                         v-else-if="!$v.formUser.userName.minLength">Le nom est
                         invalide</span>
+                    <!-- <InputPass title="ANCIEN MOT DE PASSE" id="password" v-model="formUser.oldPassword" />
+                    <span class="errors" :class="{ 'showspan': iserrors }" v-if="!$v.formUser.oldPassword.required">Le
+                        mot
+                        de passe
+                        est obligatoire.</span>
+                    <span class="errors" :class="{ 'showspan': iserrors }"
+                        v-else-if="!$v.formUser.oldPassword.minLength">Mot de
+                        passe invalide</span>
+                    <InputPass title="NOUVEAU MOT DE PASSE" id="password" v-model="formUser.password" />
+                    <span class="errors" :class="{ 'showspan': iserrors }" v-if="!$v.formUser.password.required">La
+                        confirmation de mot de passe est obligatoire.</span>
+                    <span class="errors" :class="{ 'showspan': iserrors }"
+                        v-else-if="!$v.formUser.password.minLength">Mot
+                        de passe invalide</span> -->
+
+                    <!-- <button @click="modif_mdp = true" type="button" class="btn-creer">MODIFIER LE MOT DE PASSE</button>
+                    <button v-if="modif_mdp" @click="generatePassword" type="button" class="btn-creer fade_in">GENERER
+                        UN MOT DE PASSE</button>
+                    <InputPass v-if="modif_mdp" class="entrance" title="NOUVEAU MOT DE PASSE" id="password"
+                        v-model="formUser.password" /> -->
+
+
+
 
                     <InputUser title="EMAIL" id="email" v-model="formUser.email" />
                     <span class="errors" :class="{ 'showspan': iserrors }" v-if="!$v.formUser.email.required">Un Email
@@ -33,17 +56,7 @@
                     <span class="errors" :class="{ 'showspan': iserrors }" v-if="!$v.formUser.userType.required">
                         The user type is required
                     </span>
-
-                    <div v-for="(platform, index) in newuserplatform" class="mt-5 platform-valid">
-                        <div class="selector">
-                            <InputUser title="PLATEFORME" id="telephone" :value="platform.platformName" />
-                            <InputUser title="PROFIL D'UTILISATEUR" id="telephone"
-                                :value="platform.userProfile.userProfileName" />
-                        </div>
-                        <button @click="deletePlatformObjectitem(index)" type="button" class="red-cross">X</button>
-                    </div>
-
-                    <!-- <AddPlatform :types="'user'" ref="refplatform" :sendplatform="this.detailUser.platformList" /> -->
+                    <AddPlatform :types="'user'" ref="refplatform" :sendplatform="this.detailUser.platformList" />
                     <span style="position: absolute;margin-top:-45px;" class="errors"
                         :class="{ 'showspan': !error_platform }">
                         Les accès aux utilisateurs sont incorrects.
@@ -78,10 +91,10 @@ export default {
     },
     data() {
         return {
-            newuserplatform: {},
             formUser: {
-
                 userName: null,
+                // oldPassword: null,
+                // password: null,
                 telephone: null,
                 email: null,
                 info: null,
@@ -96,6 +109,7 @@ export default {
             }],
             iserrors: true,
             error_platform: false,
+            // modif_mdp: false,
         };
     },
     validations: {
@@ -122,53 +136,94 @@ export default {
         }
     },
     methods: {
-        deletePlatformObjectitem(index) {
-            if (this.newuserplatform.hasOwnProperty(index)) {
-                this.newuserplatform.splice(index, 1);
-            }
-            console.log(this.newuserplatform);
-        },
+        // generatePassword() {
+        //     let password = "";
+        //     const minLength = 16;
+        //     const possibleCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{};':\"<>,.?/\\|";
+        //     for (let i = 0; i < minLength; i++) {
+        //         password += possibleCharacters.charAt(Math.floor(Math.random() * possibleCharacters.length));
+        //     }
+        //     if (!/[A-Z]/.test(password)) {
+        //         password = password.substring(0, 15) + "ABCDEFGHIJKLMNOPQRSTUVWXYZ".charAt(Math.floor(Math.random() * 26));
+        //     }
+        //     this.formUser.password = password
+        // },
 
         cancelAdd() {
             this.$router.push("/Users");
         },
 
         async updateUserform() {
+            
             await this.$store.dispatch('users/getUser', this.$route.query.id);
             this.formUser.userName = this.detailUser.name;
             this.formUser.telephone = this.detailUser.telephone;
             this.formUser.email = this.detailUser.email;
             this.formUser.info = this.detailUser.info;
             this.formUser.userType = this.detailUser.userType;
-            this.newuserplatform = this.detailUser.platformList
+            // this.formUser.oldPassword = this.detailUser.password
         },
 
         ...mapActions({ updateUser: 'users/updateUser' }),
 
         async validateUser() {
-            // await this.$refs.refplatform.maFonction();
+            await this.$refs.refplatform.maFonction();
             this.$v.$touch();
             console.log("toto");
             if (!this.$v.$invalid) {
+
                 console.log('valid form');
-                var objectBody = {
-                    userName: this.formUser.userName,
-                    email: this.formUser.email,
-                    telephone: this.formUser.telephone,
-                    info: this.formUser.info,
-                    userType: this.formUser.userType.name,
-                    platformList: this.newuserplatform.map(el => {
-                        return {
-                            platformId: el.platformId,
-                            platformName: el.platformName,
-                            userProfile: {
-                                userProfileAdminId: el.userProfile.userProfileAdminId,
-                                userProfileBosConfigId: el.userProfile.userProfileBosConfigId,
-                                userProfileName: el.userProfile.userProfileName
-                            }
-                        };
-                    })
-                };
+
+                // var platformObjectLists = {
+                //     platformId: "0123",
+                //     platformName: "lenom",
+                //     userProfile: {
+                //         userProfileAdminId: "0123",
+                //         userProfileBosConfigId: "012",
+                //         userProfileName: 'name'
+                //     }
+                // }
+                // if (this.formUser.password != null) {
+                //     var objectBody = {
+                //         userName: this.formUser.userName,
+                //         password: this.formUser.password,
+                //         email: this.formUser.email,
+                //         telephone: this.formUser.telephone,
+                //         info: this.formUser.info,
+                //         userType: this.formUser.userType.name,
+
+                //         platformList: this.platformObjectList.map(el => {
+                //             return {
+                //                 platformId: el.platformId,
+                //                 platformName: el.platformName,
+                //                 userProfile: {
+                //                     userProfileAdminId: el.userProfile.userProfileAdminId,
+                //                     userProfileBosConfigId: el.userProfile.userProfileBosConfigId,
+                //                     userProfileName: el.userProfile.userProfileName
+                //                 }
+                //             };
+                //         })
+                //     };
+                // } else {
+                    var objectBody = {
+                        userName: this.formUser.userName,
+                        email: this.formUser.email,
+                        telephone: this.formUser.telephone,
+                        info: this.formUser.info,
+                        userType: this.formUser.userType.name,
+                        platformList: this.platformObjectList.map(el => {
+                            return {
+                                platformId: el.platformId,
+                                platformName: el.platformName,
+                                userProfile: {
+                                    userProfileAdminId: el.userProfile.userProfileAdminId,
+                                    userProfileBosConfigId: el.userProfile.userProfileBosConfigId,
+                                    userProfileName: el.userProfile.userProfileName
+                                }
+                            };
+                        })
+                    };
+                // }
 
                 var profile = [objectBody, this.$route.query.id];
                 this.updateUser(profile);
@@ -197,42 +252,10 @@ export default {
     background-color: #d6e2e600;
 }
 
-.platform-valid {
-    width: 99%;
-    height: 150px;
-    background-color: #e0eee5;
-    border-radius: 6px;
-    padding-left: 10px;
-    padding-right: 10px;
-    display: flex;
-}
-
-.selector {
-    position: relative;
-    width: 100%;
-}
-
 .formulaire {
     padding-left: 25%;
     padding-right: 25%;
     padding-bottom: 20px;
-}
-
-.red-cross {
-    margin-top: 22px;
-    margin-left: 10px;
-    border-radius: 10px;
-    height: 42px;
-    width: 45px;
-    color: orangered;
-    border: 1px solid orangered;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: 500;
-    font-siplatform_copiee: 15px;
-    padding-top: 2px;
-    transition: 0.2s;
 }
 
 .entrance {

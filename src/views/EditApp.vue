@@ -17,10 +17,14 @@
                     <InputUser title="TYPE D'APPLICATION" id="type" v-model="formApp.appType" />
                     <span class="errors" :class="{ 'showspan': iserrors }" v-if="!$v.formApp.appType.required">Le Type
                         d'appication est nécessaire</span>
-                    <AddPlatform :types="'app'" ref="refplatform"/>
-                    <span style="position: absolute;margin-top:-45px;" class="errors" :class="{ 'showspan': !error_platform }">
-                        Les accès aux utilisateurs sont incorrects.
-                    </span>
+                    <div @click="toto()" v-for="(platform, index) in newappplatform" class="mt-5 platform-valid">
+                        <div class="selector">
+                            <InputUser title="PLATEFORME" id="telephone" :value="platform.platformName" />
+                            <InputUser title="PROFIL D'UTILISATEUR" id="telephone"
+                                :value="platform.appProfile.appProfileName" />
+                        </div>
+                        <button @click="deletePlatformObjectitem(index)" type="button" class="red-cross">X</button>
+                    </div>
                     <div class="d-flex justify-end">
                         <div class="btn-retour" @click="cancelAdd()">RETOUR</div>
                         <button type="submit" class="btn-creer">MODIFIER L'UTILISATEUR</button>
@@ -50,6 +54,7 @@ export default {
     },
     data() {
         return {
+            newappplatform: {},
             formApp: {
                 appName: null,
                 clientId: 'this.generateRegisterKey()',
@@ -79,44 +84,47 @@ export default {
         }
     },
     methods: {
+        deletePlatformObjectitem(index) {
+            if (this.newappplatform.hasOwnProperty(index)) {
+                this.newappplatform.splice(index, 1);
+            }
+        },
         cancelAdd() {
-            this.$router.push("/Users");
+            this.$router.push("/Application");
         },
 
         async updateAppForm() {
-           await this.$store.dispatch('applications/getApp', this.$route.query.id);
-            console.log(this.detailApp);
+            await this.$store.dispatch('applications/getApp', this.$route.query.id);
             this.formApp.appName = this.detailApp.name;
             this.formApp.clientId = this.detailApp.clientId;
             this.formApp.clientSecret = this.detailApp.clientSecret;
             this.formApp.appType = this.detailApp.appType;
+            this.newappplatform = this.detailApp.platformList
         },
 
         ...mapActions({ updateApp: 'applications/updateApp' }),
 
-
         async validateApp() {
-            await this.$refs.refplatform.maFonction();
             this.$v.$touch();
-
-            if (!this.$v.$invalid ) {
-                console.log('valid form');
+            if (!this.$v.$invalid) {
                 var objectBody = {
                     name: this.formApp.appName,
                     clientId: this.formApp.clientId,
                     clientSecret: this.formApp.clientSecret,
                     appType: this.formApp.appType,
-                    platformList: this.platformObjectList.map(el => {
+                    platformList: this.newappplatform.map(el => {
                         return {
                             platformId: el.platformId,
+                            platformName: el.platformName,
                             appProfile: {
-                                name: el.appProfile.name,
-                                appProfileId: el.appProfile.appProfileId
+                                appProfileAdminId: el.appProfile.appProfileAdminId,
+                                appProfileBosConfigId: el.appProfile.appProfileBosConfigId,
+                                appProfileName: el.appProfile.appProfileName
                             }
                         };
                     })
                 }
-                var profile = [objectBody,this.$route.query.id];
+                var profile = [objectBody, this.$route.query.id];
                 this.updateApp(profile);
             } else {
                 this.iserrors = false;
@@ -126,7 +134,6 @@ export default {
     computed: {
         ...mapGetters({
             detailApp: 'applications/detailApp',
-            platformObjectList: 'applications/selectedplatformObjectList',
         }),
     },
     created() {
@@ -172,6 +179,38 @@ export default {
     margin-top: 20px;
     font: normal normal normal 11px/13px Charlevoix Pro;
     letter-spacing: 1.1px;
+}
+
+.red-cross {
+    margin-top: 22px;
+    margin-left: 10px;
+    border-radius: 10px;
+    height: 42px;
+    width: 45px;
+    color: orangered;
+    border: 1px solid orangered;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 500;
+    font-siplatform_copiee: 15px;
+    padding-top: 2px;
+    transition: 0.2s;
+}
+
+.platform-valid {
+    width: 99%;
+    height: 150px;
+    background-color: #e0eee5;
+    border-radius: 6px;
+    padding-left: 10px;
+    padding-right: 10px;
+    display: flex;
+}
+
+.selector {
+    position: relative;
+    width: 100%;
 }
 
 .errors {

@@ -2,10 +2,13 @@
   <v-app>
     <v-main>
       <div class="navBarItem">
-        <div class="navBarDropMenu">
+        <div @click="menu2IsOpen ? menu2IsOpen = false : menu2IsOpen = true" class="navBarDropMenu">
           <div class="list"></div>
           <div class="list"></div>
           <div class="list"></div>
+        </div>
+        <div v-on:mouseleave="menu2IsOpen = false" v-if="menu2IsOpen" class="menu2">
+          <div @click="logout" class="btn_menu2">Déconnexion</div>
         </div>
         <a href="https://www.spinalcom.com">
           <div class="navBarIcon">
@@ -26,14 +29,14 @@
               {{ item }}
             </div>
           </div>
+
         </div>
       </div>
     </v-main>
   </v-app>
 </template>
 <script>
-
-
+import { mapActions } from 'vuex';
 export default {
   data() {
     return {
@@ -41,6 +44,7 @@ export default {
       iconList: ['mdi-chart-tree', 'mdi-cog', 'mdi-cog', 'mdi-cog', 'mdi-chart-timeline-variant-shimmer'],
       routeList: ['', 'users', 'Application', 'platforms', 'Logs'],
       menuIsOpen: false,
+      menu2IsOpen: false,
       selectionMenu: false,
     };
   },
@@ -48,10 +52,32 @@ export default {
 
   },
   methods: {
+
     gotoView(page) {
-      this.$router.push("/" + this.routeList[page]);
-      this.selectionMenu = page;
-    }
+      let currentPath = this.$route.path;
+      if (currentPath != "/" + this.routeList[page]) {
+        this.$router.push("/" + this.routeList[page]);
+        this.selectionMenu = page;
+      }
+    },
+
+    checkroute() {
+      if (this.$route.path == '/DetailUser' || this.$route.path == '/users') {
+        this.selectionMenu = 1
+      } else if (this.$route.path == '/Application' || this.$route.path == '/DetailApp') {
+        this.selectionMenu = 2
+      } else if (this.$route.path == '/platforms' || this.$route.path == '/DetailPlatform') {
+        this.selectionMenu = 3
+      } else {
+        this.selectionMenu = 4
+      }
+    },
+    ...mapActions({
+      logout: 'login/logout'
+    })
+  },
+  created() {
+    this.checkroute();
   }
 }
 </script>
@@ -61,6 +87,22 @@ export default {
   position: fixed;
   z-index: 99;
   top: 0px;
+}
+
+.btn_menu2 {
+  width: 100%;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top: 1px solid rgb(224, 224, 224);
+  cursor: pointer;
+  font-size: 12px;
+  color: #000000;
+}
+
+.btn_menu2:hover {
+  background-color: rgb(238, 238, 238);
 }
 
 .navBarItem {
@@ -91,7 +133,9 @@ export default {
   flex-direction: column;
   cursor: pointer;
   transition: 0.2s;
+  z-index: 99;
 }
+
 
 .navBarDropMenu:hover {
   background-color: #14202C;
@@ -112,6 +156,58 @@ export default {
   align-items: center;
 }
 
+.menu2 {
+  position: absolute;
+  background-color: white;
+  width: 150px;
+  height: 180px;
+  top: 13px;
+  left: 10px;
+  border-radius: 6px;
+  border: 1px solid black;
+  display: flex;
+  align-items: flex-end;
+  -webkit-animation: scale-in-tl 0.2s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+  animation: scale-in-tl 0.2s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+
+@-webkit-keyframes scale-in-tl {
+  0% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+    -webkit-transform-origin: 0% 0%;
+    transform-origin: 0% 0%;
+    opacity: 1;
+  }
+
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    -webkit-transform-origin: 0% 0%;
+    transform-origin: 0% 0%;
+    opacity: 1;
+  }
+}
+
+@keyframes scale-in-tl {
+  0% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+    -webkit-transform-origin: 0% 0%;
+    transform-origin: 0% 0%;
+    opacity: 1;
+  }
+
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    -webkit-transform-origin: 0% 0%;
+    transform-origin: 0% 0%;
+    opacity: 1;
+  }
+}
+
+
 .navBarSelector {
   width: 242px;
   height: 40px;
@@ -121,9 +217,46 @@ export default {
   cursor: pointer;
   display: flex;
   padding-left: 10px;
-font-size: 12px;
+  font-size: 12px;
   align-items: center;
 }
+
+@-webkit-keyframes scale-in-ver-top {
+  0% {
+    -webkit-transform: scaleY(0);
+    transform: scaleY(0);
+    -webkit-transform-origin: 100% 0%;
+    transform-origin: 100% 0%;
+    opacity: 1;
+  }
+
+  100% {
+    -webkit-transform: scaleY(1);
+    transform: scaleY(1);
+    -webkit-transform-origin: 100% 0%;
+    transform-origin: 100% 0%;
+    opacity: 1;
+  }
+}
+
+@keyframes scale-in-ver-top {
+  0% {
+    -webkit-transform: scaleY(0);
+    transform: scaleY(0);
+    -webkit-transform-origin: 100% 0%;
+    transform-origin: 100% 0%;
+    opacity: 1;
+  }
+
+  100% {
+    -webkit-transform: scaleY(1);
+    transform: scaleY(1);
+    -webkit-transform-origin: 100% 0%;
+    transform-origin: 100% 0%;
+    opacity: 1;
+  }
+}
+
 
 .navBarSelectorTitle {
   position: absolute;
@@ -150,7 +283,8 @@ font-size: 12px;
   border-bottom-right-radius: 6px;
   flex-direction: column;
   user-select: none;
-  transition: 0.3s;
+  -webkit-animation: scale-in-ver-top 0.2s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+  animation: scale-in-ver-top 0.2s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
 }
 
 .navBarItemElement {

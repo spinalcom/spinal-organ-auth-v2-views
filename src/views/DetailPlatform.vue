@@ -31,7 +31,7 @@
                             <div @click="affichage()">
                                 <v-data-table fixed-header style="background-color: #F7F7F7;" :footer-props="{
                                     'items-per-page-options': [10, -1]
-                                }" :items-per-page="30" height="45vh" :headers="headers" :items="this.platform.organs"
+                                }" :items-per-page="30" height="45vh" :headers="headersorgane" :items="this.platform.organs"
                                     :search="search">
                                 </v-data-table>
                             </div>
@@ -67,7 +67,7 @@
                             <div @click="affichage()">
                                 <v-data-table fixed-header style="background-color: #F7F7F7;" :footer-props="{
                                     'items-per-page-options': [10, -1]
-                                }" :items-per-page="30" height="45vh" :headers="headers" :items="userListLinkPlatform"
+                                }" :items-per-page="30" height="45vh" :headers="headersuser" :items="userListLinkPlatform"
                                     :search="search">
                                 </v-data-table>
                             </div>
@@ -79,7 +79,7 @@
                             <div @click="affichage()">
                                 <v-data-table fixed-header style="background-color: #F7F7F7;" :footer-props="{
                                     'items-per-page-options': [10, -1]
-                                }" :items-per-page="30" height="45vh" :headers="headers" :items="appListLinkPlatform"
+                                }" :items-per-page="30" height="45vh" :headers="headersapp" :items="appListLinkPlatform"
                                     :search="search">
                                 </v-data-table>
                             </div>
@@ -96,7 +96,7 @@
                                 </v-card-title>
                                 <v-data-table fixed-header style="background-color: #F7F7F7;" :footer-props="{
                                     'items-per-page-options': [10, -1]
-                                }" :items-per-page="30" height="45vh" :headers="headers" :items="logList"
+                                }" :items-per-page="30" height="45vh" :headers="headers" :items="this.formattedLogList"
                                     :search="search">
                                 </v-data-table>
                             </div>
@@ -134,8 +134,26 @@ export default {
             { text: 'Message', value: 'message' },
             { text: 'Acteur', value: 'actor.actorName' },
             { text: 'Id Acteur', value: 'actor.actorId' },],
+            headersuser: [{ text: 'Nom', value: 'name' },
+            { text: 'Info', value: 'info' },
+            { text: 'userType', value: 'userType' },
+            { text: 'type', value: 'type' },
+            { text: 'Id Acteur', value: 'id' },],
+            headersorgane: [{ text: 'Nom', value: 'name' },
+            { text: 'Id', value: 'id' },
+            { text: 'Organ Type', value: 'organType' },
+            { text: 'statusOrgan', value: 'statusOrgan' },
+            { text: 'type', value: 'type' },],
+            headersapp: [{ text: 'Nom', value: 'name' },
+            { text: 'Type d\'applicaton', value: 'appType' },
+            { text: 'Id', value: 'id' },
+            { text: 'Client ID', value: 'clientId' },
+            { text: 'Client Secret', value: 'clientSecret' },
+            ],
             headers2: [{ text: 'Nom', value: 'name' },
-            { text: 'Id profil', value: 'date' }],
+            { text: 'Id profil', value: 'id' },
+            { text: 'Type', value: 'type' }
+        ],
             mounted: false,
             platformId: null,
             
@@ -150,10 +168,12 @@ export default {
     },
     methods: {
         updatePlatform() {
+            
             this.$store.dispatch('platforms/getPlatform', this.$route.query.id);
             this.$store.dispatch('platforms/getPlatformLogs', this.$route.query.id);
-            this.$store.dispatch('platforms/getApplications');
-            this.$store.dispatch('platforms/getUsers');
+            this.$store.dispatch('platforms/getApplications', this.$route.query.id);
+            this.$store.dispatch('platforms/getUsers', this.$route.query.id);
+           
 
         },
         affichage() {
@@ -169,6 +189,14 @@ export default {
             appListLinkPlatform:'platforms/appListLinkPlatform',
             userListLinkPlatform:'platforms/userListLinkPlatform',
         }),
+        formattedLogList() {
+            return this.logList.map(log => {
+                log.date = new Date(log.date).toLocaleString();
+                return log;
+            });
+        }
+        ,
+
     },
     created() {
         this.updatePlatform()

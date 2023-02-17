@@ -33,12 +33,14 @@ export default {
         dataList: state => state.data
     },
     actions: {
-        async login(context,formuser) {
+        logout() {
+            localStorage.removeItem("token");
+            router.push("/Login");
+        },
+        async login(context, formuser) {
             try {
-                console.log(formuser.userName);
                 await tokenGen(formuser.userName, formuser.password);
                 router.push("/");
-                console.log("la fonction login est lancé ici " + formuser.userName + " et le mdp : " + formuser.password);
             } catch (error) {
                 console.log(error);
             }
@@ -50,7 +52,7 @@ export default {
                     "x-access-token": localStorage.getItem("token"),
                 }
             });
-            console.log(rep.data);
+            // console.log(rep.data);
         }
     },
     mutations: {
