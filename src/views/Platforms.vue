@@ -12,13 +12,13 @@
                     <span class="subtitle-backbar">Nom</span>
                 </div>
                 <div class="sub-division">
-                    <span class="subtitle-backbar">Nb Organe</span>
+                    <span class="subtitle-backbar">Nombre d'organe</span>
                 </div>
                 <div class="sub-division">
-                    <span class="subtitle-backbar">Nb Profil d'utilisateur</span>
+                    <span class="subtitle-backbar">Nombre de Profil d'utilisateur</span>
                 </div>
                 <div class="sub-division">
-                    <span class="subtitle-backbar">Nb Profil d'application</span>
+                    <span class="subtitle-backbar">Nombre de Profil d'application</span>
                 </div>
                 <div class="sub-division">
                     <span class="subtitle-backbar">statut</span>

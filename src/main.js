@@ -44,5 +44,8 @@ new Vue({
   components: { App },
   template: '<App/>',
   vuetify,
-  validations: {}
+  validations: {},
+  mounted() {
+    this.$router.replace('/login');
+  },
 });

@@ -18,6 +18,9 @@
           <InputPass title="COMFIRMER MOT DE PASSE" id="confirmPassword" v-model="formUser.confirm_password" />
           <span class="errors" :class="{ 'showspan': iserrors }" v-if="!$v.formUser.confirm_password.required">La
             confirmation de mot de passe est obligatoire.</span>
+            <span class="errors" :class="{ 'showspan': iserrors }" v-if="conf_pass">
+              la confirmation de mot de passe n'est pas bonne.
+          </span>
           <span class="errors" :class="{ 'showspan': iserrors }" v-else-if="!$v.formUser.confirm_password.minLength">Mot
             de passe invalide</span>
           <InputUser title="EMAIL" id="Email" v-model="formUser.email" />
@@ -95,6 +98,7 @@ export default {
       {
         name: 'Super User'
       }],
+      conf_pass : false,
     };
   },
 
@@ -144,7 +148,7 @@ export default {
       this.$v.$touch();
 
 
-      if (!this.$v.$invalid) {
+      if (!this.$v.$invalid && this.formUser.confirm_password == this.formUser.password) {
         console.log('valid form');
         var objectBody = {
           userName: this.formUser.userName,
@@ -164,10 +168,13 @@ export default {
           })
         };
         this.saveUser(objectBody);
-
-
       } else {
         this.iserrors = false;
+        if(this.formUser.confirm_password != this.formUser.password){
+          this.conf_pass = true;
+        }else{
+          this.conf_pass = false;
+        }
       }
     },
   },

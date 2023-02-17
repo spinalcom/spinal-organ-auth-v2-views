@@ -6,7 +6,8 @@
             </div>
             <p class="mb-12">CONNEXION</p>
             <InputUser v-model="formUser.userName" class="mb-12 mt-6" title="NOM D'UTILISATEUR" :value="''"></InputUser>
-            <InputUser v-model="formUser.password" class="mb-12 mt-6" title="MOT DE PASSE" :value="''"></InputUser>
+            <!-- <InputUser v-model="formUser.password" class="mb-12 mt-6" title="MOT DE PASSE" :value="''"></InputUser> -->
+            <InputPass title="MOT DE PASSE" id="clientSecret" v-model="formUser.password" />
             <div @click="login()" class="mt-4 ml-1 popup-btn-fermer">
                 <span>VALIDER</span>
             </div>
@@ -16,11 +17,13 @@
 
 <script>
 import InputUser from "../Components/InputUser.vue";
+import InputPass from "../Components/InputPassword";
 import { mapActions } from 'vuex';
 export default {
     name: "App",
     components: {
         InputUser,
+        InputPass
     },
     data() {
         return {
