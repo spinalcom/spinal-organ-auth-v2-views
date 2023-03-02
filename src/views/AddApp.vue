@@ -9,10 +9,10 @@
                         invalide</span>
                     <span class="errors" :class="{ 'showspan': iserrors }" v-else-if="!$v.formApp.appName.required">Un
                         nom d'application est requis</span>
-                    <InputPass title="CLIENT ID" id="clientId" v-model="formApp.clientId" />
+                    <InputPass readonly="true" title="CLIENT ID" id="clientId" v-model="formApp.clientId" />
                     <span class="errors" :class="{ 'showspan': iserrors }" v-if="!$v.formApp.clientId.required">un id
                         client est requis</span>
-                    <InputPass title="CLIENT SECRET" id="clientSecret" v-model="formApp.clientSecret" />
+                    <InputPass readonly="true" title="CLIENT SECRET" id="clientSecret" v-model="formApp.clientSecret" />
                     <span class="errors" :class="{ 'showspan': iserrors }" v-if="!$v.formApp.clientSecret.required">Le
                         mot de passe est nécessaire</span>
                     <InputUser title="TYPE D’APPLICATION" id="appType" v-model="formApp.appType" />

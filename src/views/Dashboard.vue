@@ -27,7 +27,7 @@
             <hr style="min-width: 1100px;" class="line-division">
             <div class="container-cardmenu">
               <CardMenu :icon="'mdi-shield-crown'" :verif="filtersData.search" :link="'platforms'" :title="'PLATEFORMES'"
-                :subtitle="'Configuration des BOS'">
+                :subtitle="'Configuration des Plateformes'">
               </CardMenu>
               <CardMenu :icon="'mdi-view-list'" :verif="filtersData.search" :link="'Logs'" :title="'LOGS'"
                 :subtitle="'Connexions et utilisations du logiciel'"></CardMenu>
@@ -47,8 +47,8 @@
           <div class="menu-administraton">
             <hr style="min-width: 1100px;" class="line-division">
             <div class="container-cardmenu">
-              <CardMenu :icon="'mdi-account'" :verif="filtersData.search" :link="'AddUser'" :title="'AJOUTER UN UTILISATEUR'"
-                :subtitle="'Créer un utilisateur'"></CardMenu>
+              <CardMenu :icon="'mdi-account'" :verif="filtersData.search" :link="'AddUser'"
+                :title="'AJOUTER UN UTILISATEUR'" :subtitle="'Créer un utilisateur'"></CardMenu>
               <CardMenu :icon="'mdi-apps'" :verif="filtersData.search" :link="'AddApp'" :title="'AJOUTER UNE APPLICATION'"
                 :subtitle="'Créer une application'"></CardMenu>
             </div>
@@ -76,12 +76,17 @@ export default {
     ...mapState({
       data: state => state.module.data
     })
-    
+
   },
   methods: {
     ...mapActions({
-      fetchData: 'module/fetchData'
-    })
+      fetchData: 'module/fetchData',
+      getToken: 'login/getToken'
+    }),
+
+  },
+  mounted() {
+    this.getToken();
   }
 }
 </script>

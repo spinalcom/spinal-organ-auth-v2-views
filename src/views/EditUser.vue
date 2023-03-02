@@ -36,8 +36,8 @@
 
                     <div v-for="(platform, index) in newuserplatform" class="mt-5 platform-valid">
                         <div class="selector">
-                            <InputUser title="PLATEFORME" id="telephone" :value="platform.platformName" />
-                            <InputUser title="PROFIL D'UTILISATEUR" id="telephone"
+                            <InputUser :readonly="true" title="PLATEFORME" id="telephone" :value="platform.platformName" />
+                            <InputUser :readonly="true" title="PROFIL D'UTILISATEUR" id="telephone"
                                 :value="platform.userProfile.userProfileName" />
                         </div>
                         <button @click="deletePlatformObjectitem(index)" type="button" class="red-cross">X</button>

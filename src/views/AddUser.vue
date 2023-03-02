@@ -15,11 +15,11 @@
             est obligatoire.</span>
           <span class="errors" :class="{ 'showspan': iserrors }" v-else-if="!$v.formUser.password.minLength">Mot de
             passe invalide</span>
-          <InputPass title="COMFIRMER MOT DE PASSE" id="confirmPassword" v-model="formUser.confirm_password" />
+          <InputPass title="CONFIRMER MOT DE PASSE" id="confirmPassword" v-model="formUser.confirm_password" />
           <span class="errors" :class="{ 'showspan': iserrors }" v-if="!$v.formUser.confirm_password.required">La
             confirmation de mot de passe est obligatoire.</span>
             <span class="errors" :class="{ 'showspan': iserrors }" v-if="conf_pass">
-              la confirmation de mot de passe n'est pas bonne.
+              La confirmation de mot de passe est incorrect.
           </span>
           <span class="errors" :class="{ 'showspan': iserrors }" v-else-if="!$v.formUser.confirm_password.minLength">Mot
             de passe invalide</span>

@@ -8,9 +8,9 @@
                     </div>
                     <p class="mb-6">AJOUTER À UNE PLATFORME</p>
                     <div class="choix_platform">
-                        <SelectUser v-model="formPlatformObject.platform" @change.native="getuserfromplatform()"
+                        <SelectUser style="z-index: 99;" v-model="formPlatformObject.platform" @select="getuserfromplatform()"
                             title="PLATFORME" id="userType" :tab="platformList" />
-                        <SelectUser v-model="formPlatformObject.userProfileValue" :tab="userProfileList"
+                        <SelectUser  v-model="formPlatformObject.userProfileValue" :tab="userProfileList"
                             title="PROFILE D'UTILISATEUR" id="userType" />
                     </div>
                     <div @click="editUserPlatform()" class="mt-4 ml-1 popup-btn-ajouter">
@@ -34,7 +34,7 @@
                         <span>MODIFIER</span>
                     </div>
                     <div @click="showrestpass = false" class="mt-2 ml-1 popup-btn-fermer">
-                        <span>FERMER</span>
+                        <span>ANNULER</span>
                     </div>
                 </v-card>
             </div>
@@ -61,10 +61,8 @@
                         <span class="bar-information">{{ this.detailUser.telephone }}</span>
                     </div>
                     <div class="d-flex flex-column mr-16">
-                        
-                            <BlueButton @click.native="showrestpass = true" :icon="'mdi-lock-reset'"
+                            <BlueButton style="transform: translate(0,-10%);" @click.native="showrestpass = true" :icon="'mdi-lock-reset'"
                                 title="Modifier le mot de passe " :val="'blue'" />
-
                     </div>
                 </div>
                 <div class="d-flex flex-column mr-16">
@@ -72,6 +70,7 @@
                     <span class="bar-information">{{ this.detailUser.info }}</span>
                 </div>
             </InformationBar>
+            
 
             <BackupInformation style="max-height: 70%; min-height: 70%;" title="DÉTAIL PROFIL D'UTILISATEUR">
                 <Tabs :items="items">
@@ -442,8 +441,8 @@ export default {
 
 .popup-btn-fermer {
     position: absolute;
-    left: 73%;
-    top: 75%;
+    bottom: 10px;
+    right: 10px;
     width: 145px;
     height: 40px;
     background-color: #14202C;
@@ -459,8 +458,8 @@ export default {
 
 .popup-btn-ajouter {
     position: absolute;
-    left: 48%;
-    top: 75%;
+    left: 49%;
+    bottom: 10px;
     width: 145px;
     height: 40px;
     background-color: #14202C;
@@ -477,7 +476,7 @@ export default {
 .popup-btn-copier {
     position: absolute;
     left: 23%;
-    top: 75%;
+    bottom: 10px;
     width: 145px;
     height: 40px;
     background-color: #14202C;
@@ -500,4 +499,9 @@ export default {
     z-index: 99;
     backdrop-filter: blur(5px);
 }
-</style>
+</style><Tabs :items="items">
+    <v-tab-item>
+        <v-card style="background-color: #F7F7F7;">
+            <div @click="affichage()">
+                <v-data-table fixed-header style="background-color: #F7F7F7;" :footer-props="{
+           

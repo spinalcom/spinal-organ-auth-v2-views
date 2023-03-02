@@ -53,6 +53,16 @@ export default {
                 }
             });
             // console.log(rep.data);
+        },
+        async getToken() {
+            // console.log("la");
+            const rep = await instanceAxios.instanceAxios.get("/tokens/UserToken", {
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-access-token": localStorage.getItem("token"),
+                }
+            });
+            // console.log(rep.data);
         }
     },
     mutations: {

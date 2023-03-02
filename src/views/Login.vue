@@ -44,9 +44,7 @@ export default {
             getUsers: 'login/getUsers'
         })
     },
-    // mounted(){
-    //     getUsers();
-    // } 
+   
 }
 
 </script>

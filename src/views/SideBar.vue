@@ -12,7 +12,7 @@
         </div>
         <a href="https://www.spinalcom.com">
           <div class="navBarIcon">
-            <img width="100" src="../assets/logo.svg" alt="">
+            <img width="100" src="../assets/logo1.jpg" alt="">
           </div>
         </a>
         <div v-on:mouseleave="menuIsOpen = false" @click="menuIsOpen ? menuIsOpen = false : menuIsOpen = true"
@@ -29,7 +29,6 @@
               {{ item }}
             </div>
           </div>
-
         </div>
       </div>
     </v-main>
@@ -38,6 +37,7 @@
 <script>
 import { mapActions } from 'vuex';
 export default {
+
   data() {
     return {
       menuList: ['TOUTE L’ADMINISTRATION', 'GESTION UTILISATEUR', 'GESTION APPLICATION', 'GESTION PLATFORME', 'LOGS'],
@@ -46,6 +46,7 @@ export default {
       menuIsOpen: false,
       menu2IsOpen: false,
       selectionMenu: false,
+      currentRoute: ''
     };
   },
   components: {
@@ -62,22 +63,31 @@ export default {
     },
 
     checkroute() {
-      if (this.$route.path == '/DetailUser' || this.$route.path == '/users') {
+      console.log("toto1");
+      if (this.$route.path == '/DetailUser' || this.$route.path == '/users'|| this.$route.path == '/AddUser' || this.$route.path == '/EditUser' ) {
         this.selectionMenu = 1
-      } else if (this.$route.path == '/Application' || this.$route.path == '/DetailApp') {
+      } else if (this.$route.path == '/Application' || this.$route.path == '/DetailApp' || this.$route.path == '/AddApp'|| this.$route.path == '/EditApp') {
         this.selectionMenu = 2
       } else if (this.$route.path == '/platforms' || this.$route.path == '/DetailPlatform') {
         this.selectionMenu = 3
-      } else {
+      } else if(this.$route.path == '/'){
+        this.selectionMenu = 0
+      }
+      else {
         this.selectionMenu = 4
       }
     },
     ...mapActions({
       logout: 'login/logout'
-    })
+    }),
   },
   created() {
     this.checkroute();
+  },
+  watch: {
+    $route(to, from) {
+      this.checkroute()
+    }
   }
 }
 </script>

@@ -8,7 +8,7 @@
                     </div>
                     <p class="mb-6">AJOUTER À UNE PLATFORME</p>
                     <div class="choix_platform">
-                        <SelectUser v-model="formPlatformObjectapp.platform" @change.native="getAppProfileList()"
+                        <SelectUser style="z-index: 99;" v-model="formPlatformObjectapp.platform" @select="getAppProfileList()"
                             title="PLATFORM" id="userType" :tab="platformList" />
                         <SelectUser v-model="formPlatformObjectapp.appProfileValue" title="APPLICATION" id="userType"
                             :tab="appProfileList" />

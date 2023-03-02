@@ -25,7 +25,6 @@ const TOKEN = 'token';
 const router = require('../router');
 const instanceAxios = require('../services/axiosConfig');
 async function getToken(user, pass) {
-  console.log("je suis dans le genTok , je vais axios");
   let userparams = {
     userName: user,
     password: pass,
@@ -46,7 +45,6 @@ async function getToken(user, pass) {
 }
 
 async function* genToken(user, pass) {
-  console.log("je suis dans le genToken");
   let token;
   if (user && pass) {
     token = await getToken(user, pass);

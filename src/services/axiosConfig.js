@@ -24,7 +24,8 @@
 // const axios = require('axios');
 import axios from "axios";
 export const instanceAxios = axios.create({
-  baseURL: 'http://localhost:9060/',
+  // baseURL: 'http://localhost:9060/',
+  baseURL: '/',
   timeout: 1000,
   headers: { 'X-Custom-Header': 'foobar' },
 });

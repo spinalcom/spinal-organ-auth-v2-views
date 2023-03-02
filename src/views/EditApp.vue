@@ -8,10 +8,10 @@
                         invalide</span>
                     <span class="errors" :class="{ 'showspan': iserrors }" v-else-if="!$v.formApp.appName.required">Un
                         nom d'application est requis</span>
-                    <InputPass title="ID DU CLIENT" id="clientId" v-model="formApp.clientId" />
+                    <InputPass readonly="true" title="ID DU CLIENT" id="clientId" v-model="formApp.clientId" />
                     <span class="errors" :class="{ 'showspan': iserrors }" v-if="!$v.formApp.clientId.required">un id
                         client est requis</span>
-                    <InputPass title="SECRET CLIENT" id="clientSecret" v-model="formApp.clientSecret" />
+                    <InputPass readonly="true" title="SECRET CLIENT" id="clientSecret" v-model="formApp.clientSecret" />
                     <span class="errors" :class="{ 'showspan': iserrors }" v-if="!$v.formApp.clientSecret.required">Le
                         mot de passe est nécessaire</span>
                     <InputUser title="TYPE D'APPLICATION" id="type" v-model="formApp.appType" />
@@ -19,8 +19,8 @@
                         d'appication est nécessaire</span>
                     <div @click="toto()" v-for="(platform, index) in newappplatform" class="mt-5 platform-valid">
                         <div class="selector">
-                            <InputUser title="PLATEFORME" id="telephone" :value="platform.platformName" />
-                            <InputUser title="PROFIL D'UTILISATEUR" id="telephone"
+                            <InputUser :readonly="true" title="PLATEFORME" id="telephone" :value="platform.platformName" />
+                            <InputUser :readonly="true" title="PROFIL D'UTILISATEUR" id="telephone"
                                 :value="platform.appProfile.appProfileName" />
                         </div>
                         <button @click="deletePlatformObjectitem(index)" type="button" class="red-cross">X</button>
