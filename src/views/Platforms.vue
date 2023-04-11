@@ -58,7 +58,7 @@
                         </div>
                     </div>
                     <div class="d-flex flex-column ">
-                        <div class="btn-valider-user rounded-r-lg pr-2">
+                        <div class="btn-valider-user rounded-r-lg pr-2 hover">
                             <button @click="displayDetail(item)">
                                 <v-icon>mdi-arrow-right</v-icon>
                             </button>
@@ -221,5 +221,9 @@ export default {
     justify-content: center;
     align-items: center;
     cursor: pointer;
+}
+.hover:hover {
+  background: rgb(228, 228, 228);
+  transition: 0.3s;
 }
 </style>

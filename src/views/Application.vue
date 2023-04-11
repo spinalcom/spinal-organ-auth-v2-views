@@ -19,7 +19,7 @@
               <StateButton :obj="'app'" :content1="item.platformList[index].appProfile.appProfileName"  :icon="'mdi-apps'" />
             </div>
           </div>
-          <div class="content-list rounded-r-lg">
+          <div class="content-list rounded-r-lg hover">
             <button class="pr-3" style="height: 100%;" @click="displayDetail(item)">
               <v-icon>mdi-arrow-right</v-icon>
             </button>
@@ -94,5 +94,9 @@ export default {
   letter-spacing: 1.2px;
   flex-wrap: wrap;
   margin: 1px;
+}
+.hover:hover {
+  background: rgb(228, 228, 228);
+  transition: 0.3s;
 }
 </style>

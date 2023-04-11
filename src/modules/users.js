@@ -1,6 +1,8 @@
 // import axios from 'axios';
 const instanceAxios = require("../services/axiosConfig");
 import router from "../router"
+// import { dispatch } from 'vuex';
+// import { dispatch } from 'vuex';
 export default {
   namespaced: true,
   state: {
@@ -23,6 +25,10 @@ export default {
     logList: state => state.logList,
     userProfileList: state => state.userProfileList,
     selectedplatformObjectList: state => state.selectedplatformObjectList,
+    getUserById: (state) => (id) => {
+      console.log(state.userlist.find(user => user.id === id));
+      return state.userlist.find(user => user.id === id);
+    }
   },
   actions: {
 
@@ -38,8 +44,19 @@ export default {
       }
     },
 
-    async deleteUser({ commit }, user) {
-      // console.log(user);
+    async deleteUser({ commit, getters, dispatch }, user) {
+      // Get the list of users
+      await dispatch('getUsers');
+      // Check if the user to delete exists in the list
+      const userExists = getters.getUserById(user.id);
+      if (!userExists) {
+        alert("The user you want to delete does not exist!");
+        router.push("/Users");
+        return;
+      }
+
+      // Proceed with the deletion if the user exists
+      console.log('test4');
       let ask = true
       let r = true;
       if (ask)
@@ -59,7 +76,8 @@ export default {
           router.push("/Users");
         }
       }
-    },
+    }
+    ,
 
 
     async updateUser({ commit }, profile) {
@@ -207,7 +225,7 @@ export default {
     ),
     RESET_PLATFORM_OBJECT(state) {
       state.platformObjectList = [];
-  }
+    }
   }
 }
 
