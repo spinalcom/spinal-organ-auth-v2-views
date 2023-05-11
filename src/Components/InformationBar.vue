@@ -10,7 +10,8 @@
                 <slot></slot>
             </div>
         </v-card>
-        <v-card class="d-flex flex-column ml-2 pt-2 pb-2 bar-bloc-right justify-center rounded-lg" elevation="2">
+
+        <v-card v-if="btn != 'off'" class="d-flex flex-column ml-2 pt-2 pb-2 bar-bloc-right justify-center rounded-lg" elevation="2">
             <BlueButton @click.native="$emit('btn1')" :icon="'mdi-plus'" title="AJOUTER À PLATFORME" :val="'blue'" />
             <BlueButton @click.native="$emit('btn2')" :icon="'mdi-pencil-outline'" title="EDITER" :val="'blue'" />
             <BlueButton @click.native="$emit('btn3')" :icon="'mdi-close'" title="SUPPRMIER" :val="'red'" class="mb-2" />
@@ -25,7 +26,7 @@ export default {
     components: {
         BlueButton
     },
-    props: ['title', 'title2', 'icon'],
+    props: ['title', 'title2', 'icon', 'btn'],
 };
 </script>
   

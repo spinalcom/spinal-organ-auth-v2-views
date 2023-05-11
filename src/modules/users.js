@@ -45,9 +45,8 @@ export default {
     },
 
     async deleteUser({ commit, getters, dispatch }, user) {
-      // Get the list of users
+
       await dispatch('getUsers');
-      // Check if the user to delete exists in the list
       const userExists = getters.getUserById(user.id);
       if (!userExists) {
         alert("The user you want to delete does not exist!");
@@ -55,8 +54,6 @@ export default {
         return;
       }
 
-      // Proceed with the deletion if the user exists
-      console.log('test4');
       let ask = true
       let r = true;
       if (ask)

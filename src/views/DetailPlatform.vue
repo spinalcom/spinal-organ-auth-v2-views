@@ -1,7 +1,7 @@
 <template>
     <v-app>
         <v-main>
-            <InformationBar v-on:btn2="displayEdit()" v-on:btn3="deletePlatformItem()" title="INFORMATION DU BOS"
+            <InformationBar :btn="'off'" v-on:btn2="displayEdit()" v-on:btn3="deletePlatformItem()" title="INFORMATION DU BOS"
                 :title2="this.platform.name" :icon="require('../assets/image/BOS_icon.svg')">
                 <div class="d-flex">
                     <div class="d-flex flex-column mr-16">
